@@ -8,5 +8,8 @@
     "start": "node index.js"
   },
   "author": "Carlos Reyes Llamas",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
