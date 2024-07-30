@@ -1,8 +1,8 @@
 //Constans used appliaction wide
 
 module.exports = {
-    HOSTNAME    : '192.168.100.209', //Open to local IP to be public to external connection
-    PORT        : 3000,               //Selected Port - Changes affect the ufw setup
+    HOSTNAME    : '192.168.100.209', 
+    PORT        : 3801,              
     DB_CONN     : {
             user: 'postgres',
             password: 'Candid2024!',

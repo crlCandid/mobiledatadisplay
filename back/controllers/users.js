@@ -65,7 +65,7 @@ exports.LocalLogin = async function(req, res){
     res.json({
         success : true,
         message: 'Local Login Success',
-        result: result.rows
+        result: result.rows[0]
     });
 }
 
