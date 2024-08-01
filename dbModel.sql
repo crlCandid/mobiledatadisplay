@@ -1,4 +1,4 @@
-Create Type user_roles As ENUM('Edit', 'View', 'Remove', 'Display');
+Create Type user_roles As ENUM('Edit', 'View', 'Remove', 'Display', 'Admin', 'General');
 Create Type user_type As ENUM('Remote', 'Local');
 Create Type status_flag As ENUM('Active', 'Disable');
 Create Type report_type As ENUM('Alert', 'NCR', 'Deviation');

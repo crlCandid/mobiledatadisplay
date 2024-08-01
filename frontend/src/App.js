@@ -26,8 +26,13 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          {/* <Route path='/' element={<Components.Login />} /> */}
-          <Route path='/' element={<Components.Google />} />
+          <Route path='/' element={<Components.Login />} />
+          <Route path='/app' element={<Components.Navbar />} >
+            <Route path='' element={<Components.Main />} />
+            <Route path='reports' element={<Components.Reports.Main />} />
+            <Route path='areas' element={<Components.Areas.Main />} />
+            <Route path='users' element={<Components.Users.Main />} />
+          </Route>
         </Routes>
       </Router>
     </ThemeProvider>

@@ -6,8 +6,14 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import * as Sessions from '../controllers/sessions';
+import { GoogleLogin } from '@react-oauth/google';
+import * as Decoder from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import * as Memory from '../utils/memory';
 
 export default function SignIn() {
+  const nav = useNavigate();
+
   React.useEffect(() => {
     document.title = 'Login';
   }, [])
@@ -27,6 +33,24 @@ export default function SignIn() {
       alert('Invalid Login information. \nPlease, try again or contact support');
       return;
     }
+
+    const saved = await Memory.Set(Memory.Indexes.UserSession, result.result);
+
+    if(!saved){
+      alert('Error while Loging In. \nPlease, try again');
+      return;
+    }
+
+    nav('/main');
+  };
+
+  const handleLoginSuccess = (response) => {
+    const decoded = Decoder.jwtDecode(response.credential);
+    console.log('Login Success:', decoded);
+  };
+
+  const handleLoginFailure = (response) => {
+    console.log('Login Failed:', response);
   };
 
   return (
@@ -102,9 +126,11 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
-        <Typography component="h5" centered>
-          Sign in with Google
-        </Typography>
+        <GoogleLogin
+          onSuccess={handleLoginSuccess}
+          onFailure={handleLoginFailure}
+          useOneTap
+        />
       </Box>
     </Container>
   );

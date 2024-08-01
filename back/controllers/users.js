@@ -22,7 +22,7 @@ exports.Super = async function(){
     }
 
     try{
-        queryResult = await db.query(`Insert Into users (email, password, roles, control) Values ('super@admin.com', 'CandidRoot2024!', '{"Edit", "View", "Remove"}', 'Local')`);
+        queryResult = await db.query(`Insert Into users (email, password, roles, control) Values ('super@admin.com', 'CandidRoot2024!', '{"Edit", "View", "Remove","Admin"}', 'Local')`);
     }catch(e){
         await db.end();
         return {result: false, msg: 'Super User creation fail'};

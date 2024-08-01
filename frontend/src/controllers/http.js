@@ -1,10 +1,6 @@
 const GET = async (endpoint) => {
   let requestEndpoint = endpoint;
-
-  console.log(`${requestEndpoint}`);
-
   let response = await fetch(`${requestEndpoint}`);
-  
   return response.json();
 }
 
