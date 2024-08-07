@@ -26,5 +26,16 @@ module.exports = {
         Profile : [
             'Logout'
         ]
+    },
+    Colors: {
+        Primary:{
+            Main: '#1976d2'
+        },
+        Secondary:{
+            Main: '#dc004e',
+        }
+    },
+    Report: {
+        Kinds : ['Alert', 'NCR', 'Deviation']
     }
 }

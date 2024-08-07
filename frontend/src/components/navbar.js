@@ -162,7 +162,7 @@ function NavBar() {
             </Toolbar>
         </Container>
         </AppBar>
-        <Box sx={{p:4}}> 
+        <Box sx={{p:2}}> 
             <Outlet />
         </Box>
     </Box>

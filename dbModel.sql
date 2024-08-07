@@ -32,6 +32,7 @@ Create Table resources(
 	id SERIAL PRIMARY KEY,
 	report INT,
 	url	VARCHAR,
+	name VARCHAR(100),
 	CONSTRAINT fk_report
 		FOREIGN KEY(report)
 		REFERENCES qa_reports(id)

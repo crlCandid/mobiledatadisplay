@@ -54,7 +54,7 @@ exports.List = async function(req, res){
     res.json({
         success : true,
         message: 'Areas listing',
-        users: queryResult.rows
+        result: queryResult.rows
     });
 }
 

@@ -74,10 +74,14 @@ exports.Find = async function(req,res){
         var db = await DB.GetClient();
         await db.connect();
         const query = {
-            text: `Select
+            text: `
+                With temp_areas As (
+                    Select areas.id as id, areas.name as name, report_areas.id as relation, report_areas.report as report from report_areas Inner join areas On areas.id = report_areas.area
+                )
+                Select
                 qa_reports.*,
                 (Select users.email From users Where id = qa_reports.creator) as creatorinfo,
-                (Select json_agg(json_build_object('id', areas.id, 'name', areas.name)) From areas Where id in (Select area From report_areas Where report = qa_reports.id)) as areas,
+                (Select json_agg(json_build_object('id', temp_areas.id, 'name', temp_areas.name, 'relation', temp_areas.relation )) From temp_areas Where temp_areas.report = qa_reports.id ) as areas,
                 (Select json_agg(json_build_object('id', resources.id, 'url', resources.url)) From resources Where report = qa_reports.id) as resources
             From qa_reports
             Where id = $1`,

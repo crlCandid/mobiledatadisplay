@@ -54,8 +54,8 @@ route('/reports/:reportId', Reports.Find, 'GET');
 route('/reports', Reports.Update, 'PUT');
 route('/reports/:reportId', Reports.Delete, 'DELETE');
 route('/reports/areas', Reports.AddArea, 'POST');
-route('/reports/areas', Reports.RemoveArea, 'DELETE');
+route('/reports/areas/:relationId', Reports.RemoveArea, 'DELETE');
 route('/reports/resource', Reports.AddResource, 'POST');
-route('/reports/resource', Reports.RemoveResource, 'DELETE');
+route('/reports/resource/:resourceId', Reports.RemoveResource, 'DELETE');
 
 module.exports = router;
