@@ -9,7 +9,6 @@ import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import FeedIcon from '@mui/icons-material/Feed';
-import DeleteIcon from '@mui/icons-material/Delete';
 import TextField from '@mui/material/TextField';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Box, Typography, LinearProgress, Divider } from '@mui/material';
@@ -17,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Reports } from '../../controllers';
 import * as StylesUtil from '../../utils/styles';
+import * as Memory from '../../utils/memory';
 
 export default function Main() {
   const [data, setData] = React.useState([]);
@@ -115,11 +115,6 @@ export default function Main() {
                     <Tooltip title="Detail / Edit">
                       <IconButton onClick={() => handleDetail(row.id)}>
                         <FeedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <IconButton>
-                        <DeleteIcon />
                       </IconButton>
                     </Tooltip>
                   </TableCell>

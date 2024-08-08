@@ -160,7 +160,7 @@ export default function Crud() {
                     <OutlinedInput
                     id="identifier"
                     name='identifier'
-                    placeholder="123"
+                    placeholder="123-ABC"
                     required
                     />
                 </FormGrid>
@@ -172,8 +172,11 @@ export default function Crud() {
                         id="kind"
                         name='kind'
                         placeholder="Enter Description"
+                        value={0}
                         required
                     >
+                        <MenuItem key={0} value={0} selected disabled>Select Kind</MenuItem>
+
                         {Report.Kinds.map((value, i) => (
                             <MenuItem key={i} value={value}>{value}</MenuItem>
                         ))}

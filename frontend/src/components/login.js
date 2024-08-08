@@ -12,12 +12,28 @@ import { useNavigate } from 'react-router-dom';
 import * as Memory from '../utils/memory';
 
 export default function SignIn() {
-  const nav = useNavigate();
-
-  React.useEffect(() => {
     document.title = 'Login';
-  }, [])
+    const nav = useNavigate();
   
+    React.useEffect(() => {
+      handleLoad();
+    },[]);
+
+    const handleLoad = async() => {
+      try{
+        var result = await Memory.Get(Memory.Indexes.UserSession);
+      }catch(e){
+        console.log('Error while login:', e);
+        return;
+      }
+
+      if(!result){
+        return;
+      }
+
+      nav('/app');
+    }
+
   const handleLogin = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -41,7 +57,7 @@ export default function SignIn() {
       return;
     }
 
-    nav('/main');
+    nav('/app');
   };
 
   const handleLoginSuccess = (response) => {

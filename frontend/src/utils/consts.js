@@ -36,6 +36,7 @@ module.exports = {
         }
     },
     Report: {
-        Kinds : ['Alert', 'NCR', 'Deviation']
+        Kinds : ['Alert', 'NCR', 'Deviation'],
+        Status: ['Active', 'Disable']
     }
 }

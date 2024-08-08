@@ -43,9 +43,9 @@ export default function Detail() {
     const [loading, setLoading] = React.useState(true);
     const [areas, setAreas] = React.useState([]);
     const [validAreas, setValidAreas] = React.useState([]);
+    const [reportDelta, setReportDelta] = React.useState(false);
     const [report, setReport] = React.useState({});
 
-    const [data, setData] = React.useState({});
     const [openForm, setOpenForm] = React.useState(false);
     const [openDismiss, setOpenDismiss] = React.useState(false);
     
@@ -55,6 +55,7 @@ export default function Detail() {
     const [areaRemoveId, setAreaRemoveId] = React.useState(0);
 
     const [resourceUrl, setResourceUrl] = React.useState('');
+    const [resourceName, setResourceName] = React.useState('');
     const [resourceOpen, setResourceOpen] = React.useState(false);
     const [resourceId, setResourceId] = React.useState(0);
     const [resourceRemoveOpen, setResourceRemoveOpen] = React.useState(false);
@@ -157,43 +158,42 @@ export default function Detail() {
         setValidAreas(result);
     }
 
-    const handleSubmit = async(event) => {
-        event.preventDefault();
-        const form = new FormData(event.currentTarget);
-
-        setData({
-            creator: 1,
-            name: form.get('name'),
-            identifier: form.get('identifier'),
-            description: form.get('description'),
-            kind: form.get('kind'),
-            from: form.get('dtfrom'),
-            to: form.get('dtto')
-        });
-
-        setOpenForm(true);
-    };
+    const handleReportChanges = async(e) => {
+        setReport({...report, [e.target.name]: e.target.value});
+        setReportDelta(true);
+    }
 
     const handelRequestDismiss = async() => {
+        if(!reportDelta){
+            nav('/app/reports');
+        }
         setOpenDismiss(true);
     }
   
     const handleConfirm = async() => {
+        const body = {
+            report: report
+        };
 
         try{
-            var result = await Reports.Create(data);
+            var result = await Reports.Update(body);
         }catch(e){
-            alert('Something went wrong while creating Report, \nPlease, try again');
+            alert('Error rised while updating Report . \nPlease, try again.');
             return;
         }
 
         if(result === undefined){
-            alert('Something went wrong while creating Report, \nPlease, try again');
+            alert('Unable to update Report . \nPlease, try again.');
             return;
         }
 
-        console.log(result);
-        //TODO Redirect to Detail
+        if(!result.success){
+            alert('Unable to update Report . \nPlease, try again.');
+            return;
+        }
+
+        setReportDelta(false);
+        handleLoad();
     }
 
     const handleDismiss = async() => {
@@ -264,7 +264,7 @@ export default function Detail() {
     }
 
     const handleRequestResource = async() => {
-        if(resourceUrl === ''){
+        if(resourceUrl === '' || resourceName === ''){
             alert('Invalid Input for new Resource. \nPlease, check your inputs');
             return;
         }
@@ -274,7 +274,8 @@ export default function Detail() {
     const handleResourceConfirm = async() => {
         const body = {
             reportId: report.id,
-            url: resourceUrl
+            url: resourceUrl,
+            name: resourceName
         };
 
         try{
@@ -294,7 +295,8 @@ export default function Detail() {
             return;
         }
 
-        setResourceUrl('')
+        setResourceUrl('');
+        setResourceName('');
         handleLoad();
     }
 
@@ -345,7 +347,7 @@ export default function Detail() {
                     onClose={handleClose}
                     onConfirm={handleConfirm}
                     open={openForm}
-                    message={'A new record will be created with the given input.'}
+                    message={'Report Information will be Updated.'}
                 />
                 <ConfirmationDialog
                     keepMounted
@@ -392,8 +394,6 @@ export default function Detail() {
                         flexDirection: 'column',
                         gap: 2,
                     }}
-                    component="form"
-                    onSubmit={handleSubmit}
                     >
                         <Box
                             sx={{
@@ -417,7 +417,7 @@ export default function Detail() {
                                     </IconButton>
                                 </Tooltip>
                             <Typography variant="h6" sx={{width:'50%'}}>Report Detail</Typography>
-                            <Typography variant="h7" >Created By: {report.creatorinfo || 123}</Typography>
+                            <Typography variant="h7" >Created By: {report.creatorinfo}</Typography>
                             </Box>
                             <Divider orientation='horizontal' />
                             <Box
@@ -437,6 +437,7 @@ export default function Detail() {
                                 name='name'
                                 placeholder="Enter Name"
                                 value={report.name}
+                                onChange={handleReportChanges}
                                 required
                                 />
                             </FormGrid>
@@ -464,6 +465,24 @@ export default function Detail() {
                                     required
                                 >
                                     {Report.Kinds.map((value, i) => (
+                                        <MenuItem key={i} value={value} selected>{value}</MenuItem>
+                                    ))}
+
+                                </Select>
+                            </FormGrid>
+                            <FormGrid sx={{ minWidth: '20%' }}>
+                                <FormLabel htmlFor="kind" required>
+                                Status
+                                </FormLabel>
+                                <Select
+                                    id="status"
+                                    name='status'
+                                    placeholder="Enter Description"
+                                    value={report.status}
+                                    onChange={handleReportChanges}
+                                    required
+                                >
+                                    {Report.Status.map((value, i) => (
                                         <MenuItem key={i} value={value} selected>{value}</MenuItem>
                                     ))}
 
@@ -513,6 +532,15 @@ export default function Detail() {
                                 />
                             </FormGrid>
                             </Box>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 2, mb: 2 , display: !reportDelta ? 'none': '' }}
+                                color='secondary'
+                                onClick={() => setOpenForm(true)}
+                            >
+                                Update
+                            </Button>
                         </Box>
                     </Box>
                 </Stack>
@@ -520,7 +548,7 @@ export default function Detail() {
                     sx={{
                         mt:2,
                         display: 'flex',
-                        flexDirection: 'row',
+                        flexDirection: { xs: 'column', md: 'row' },
                         justifyContent: 'space-between',
                         gap: 2,
                     }}
@@ -529,7 +557,7 @@ export default function Detail() {
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            width: '50%',
+                            width: { xs: '100%', md: '50%' },
                             gap: 2,
                         }}
                     >
@@ -548,8 +576,8 @@ export default function Detail() {
                             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
                             }}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                            <Typography variant="h7" sx={{width:'20%'}}> Areas</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2}}>
+                            <Typography variant="h7" sx={{width:'10%'}}> Areas</Typography>
                             <Select
                                 sx={{
                                     width:'100%'
@@ -558,6 +586,7 @@ export default function Detail() {
                                 name='kind'
                                 value={areaId}
                                 onChange={(e) => setAreaId(e.target.value)}
+                                size='small'
                             >
                                 <MenuItem key={0} value={0} selected>Select Area</MenuItem>
 
@@ -568,7 +597,7 @@ export default function Detail() {
                             </Select>
                             <Tooltip title="Add Area">
                                 <IconButton onClick={() => handleRequestArea()}>
-                                    <AddCircleIcon color='secondary' fontSize='large'/>
+                                    <AddCircleIcon color='secondary' />
                                 </IconButton>
                             </Tooltip>
                             </Box>
@@ -582,7 +611,7 @@ export default function Detail() {
                             }}
                             >
                                 <TableContainer sx={{mt:2}}>
-                                    <Table aria-label="simple table">
+                                    <Table aria-label="simple table" size='small'>
                                         <TableHead>
                                         <TableRow >
                                             <TableCell sx={StylesUtil.Table001_s.Headers}>Name</TableCell>
@@ -617,7 +646,7 @@ export default function Detail() {
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            width: '50%',
+                            width: { xs: '100%', md: '50%' },
                             gap: 2,
                         }}
                     >
@@ -627,7 +656,6 @@ export default function Detail() {
                             flexDirection: 'column',
                             justifyContent: 'space-between',
                             p: 2,
-                            // height: { xs: 300, sm: 350, md: 375 },
                             width: '100%',
                             borderRadius: '20px',
                             border: '1px solid ',
@@ -636,19 +664,28 @@ export default function Detail() {
                             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
                             }}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                                <Typography variant="h7" sx={{width:'20%'}}>Resources</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap:2}}>
+                                <Typography variant="h7" sx={{width:{sm:'10%', md:'25%'}}}>Resources</Typography>
                                 <OutlinedInput
-                                    sx={{width:'100%'}}
+                                    sx={{width:'50%'}}
                                     id="resource"
                                     name='resource'
-                                    placeholder="Input Resource URL"
+                                    placeholder="Input URL"
                                     value={resourceUrl}
                                     onChange={(e) => setResourceUrl(e.target.value)}
+                                    size='small'
+                                />
+                                <OutlinedInput
+                                    id="resource"
+                                    name='resource'
+                                    placeholder="Input Name"
+                                    value={resourceName}
+                                    onChange={(e) => setResourceName(e.target.value)}
+                                    size='small'
                                 />
                                 <Tooltip title="Add Resource">
                                     <IconButton onClick={handleRequestResource}>
-                                        <AddCircleIcon color='secondary' fontSize='large'/>
+                                        <AddCircleIcon color='secondary'/>
                                     </IconButton>
                                 </Tooltip>
                             </Box>
@@ -662,10 +699,10 @@ export default function Detail() {
                             }}
                             >
                                 <TableContainer sx={{mt:2}}>
-                                    <Table aria-label="simple table">
+                                    <Table aria-label="simple table" size='small'>
                                         <TableHead>
                                         <TableRow >
-                                            <TableCell sx={StylesUtil.Table001_s.Headers}>URL</TableCell>
+                                            <TableCell sx={StylesUtil.Table001_s.Headers}>Name</TableCell>
                                             <TableCell sx={StylesUtil.Table001_s.Headers} align="center">Actions</TableCell>
                                         </TableRow>
                                         </TableHead>
@@ -676,7 +713,7 @@ export default function Detail() {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
                                             <TableCell component="th" scope="row">
-                                                <Link href={row.url} target='_blank'>Link To be Name</Link>
+                                                <Link href={row.url} target='_blank'>{row.name}</Link>
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Tooltip title="Delete">

@@ -82,7 +82,7 @@ exports.Find = async function(req,res){
                 qa_reports.*,
                 (Select users.email From users Where id = qa_reports.creator) as creatorinfo,
                 (Select json_agg(json_build_object('id', temp_areas.id, 'name', temp_areas.name, 'relation', temp_areas.relation )) From temp_areas Where temp_areas.report = qa_reports.id ) as areas,
-                (Select json_agg(json_build_object('id', resources.id, 'url', resources.url)) From resources Where report = qa_reports.id) as resources
+                (Select json_agg(json_build_object('id', resources.id, 'url', resources.url, 'name', resources.name)) From resources Where report = qa_reports.id) as resources
             From qa_reports
             Where id = $1`,
             values: [reportId],
@@ -115,7 +115,7 @@ exports.Find = async function(req,res){
 }
 
 exports.Update = async function(req,res){
-    const {report} = req.params;
+    const {report} = req.body;
 
     try{
         var db = await DB.GetClient();
@@ -241,14 +241,14 @@ exports.RemoveArea = async function(req, res){
 }
 
 exports.AddResource = async function(req, res){
-    const {reportId, url} = req.body;
+    const {reportId, url, name} = req.body;
 
     try{
         const db = await DB.GetClient();
         await db.connect();
         const query = {
-            text: 'Insert Into resources (report, url) Values ($1, $2)',
-            values: [reportId, url]
+            text: 'Insert Into resources (report, url, name) Values ($1, $2, $3)',
+            values: [reportId, url, name]
         };
         var result = await db.query(query);
         await db.end();

@@ -91,24 +91,19 @@ export const RemoveResource = async(id) => {
     return result;
 }
 
-// export const Update = async () => {
-//     //TODO
-//     let endpoint = `/users/login/local`;
+export const Update = async (body) => {
+    //TODO
+    let endpoint = `/reports`;
 
-//     var body = {
-//         email: email,
-//         password: password
-//     };
+    try{
+        var result = await HTTP.PUT(endpoint, body);
+    }catch(e){
+        console.log(`CONTROLLER ERROR: reports.Update\n${e}`);
+        return undefined;
+    }
 
-//     try{
-//         var result = await HTTP.POST(endpoint, body);
-//     }catch(e){
-//         console.log(`CONTROLLER ERROR: users.LocalLogin\n${e}`);
-//         return undefined;
-//     }
-
-//     return result;
-// }
+    return result;
+}
 
 // export const Remove = async () => {
 //     //TODO

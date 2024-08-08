@@ -11,7 +11,7 @@ exports.Get = async(index) => {
         return false;
     }
     
-    return true;
+    return result;
 }
 
 exports.Set = async(index, object) => {
