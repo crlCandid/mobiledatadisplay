@@ -4,6 +4,16 @@ module.exports = {
     MemoIndex : {
         UserSession : 'usersession'
     },
+    SessionIndex: {
+        Roles: {
+            Edit: 'Edit',
+            View: 'View',
+            Remove: 'Remove',
+            Display: 'Display',
+            Admin: 'Admin',
+            General: 'General'
+        }
+    },
     NavBar : {
         Pages : [
             {
@@ -22,9 +32,6 @@ module.exports = {
                 text: 'Users',
                 route: '/app/Users'
             },
-        ],
-        Profile : [
-            'Logout'
         ]
     },
     Colors: {

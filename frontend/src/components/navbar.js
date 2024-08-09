@@ -13,6 +13,8 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TvIcon from '@mui/icons-material/Tv';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { ConfirmationDialog } from './utils';
+import { Session } from '../utils';
 
 const Const = require('../utils/consts');
 
@@ -20,7 +22,8 @@ function NavBar() {
     const nav = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [logoutOpen, setLogoutOpen] = React.useState(false);
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -40,8 +43,27 @@ function NavBar() {
     nav(Const.NavBar.Pages[i].route);
   }
 
+  const handleLogoutConfirm = async() => {
+    const result = await Session.Logout();
+
+    if(!result){
+        alert('Error while logging out. \nPlease, try again');
+        return;
+    }
+
+    nav('/');
+  }
+
   return (
     <Box>
+        <ConfirmationDialog
+            keepMounted
+            onClose={() => setLogoutOpen(false)}
+            onConfirm={handleLogoutConfirm}
+            open={logoutOpen}
+            message={'You will be logged out.'}
+        />
+
         <AppBar position="static" color='secondary'>
         <Container maxWidth="xl">
             <Toolbar disableGutters>
@@ -152,11 +174,9 @@ function NavBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 >
-                {Const.NavBar.Profile.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
+                    <MenuItem key={0} onClick={() => {setLogoutOpen(true); handleCloseUserMenu();}}>
+                        <Typography textAlign="center">Logout</Typography>
                     </MenuItem>
-                ))}
                 </Menu>
             </Box>
             </Toolbar>

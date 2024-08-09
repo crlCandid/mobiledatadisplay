@@ -30,6 +30,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ConfirmationDialog } from '../utils';
 import { Reports, Areas } from '../../controllers';
 import * as StylesUtil from '../../utils/styles';
+import { Session } from '../../utils';
 
 const FormGrid = styled('div')(() => ({
   display: 'flex',
@@ -45,6 +46,7 @@ export default function Detail() {
     const [validAreas, setValidAreas] = React.useState([]);
     const [reportDelta, setReportDelta] = React.useState(false);
     const [report, setReport] = React.useState({});
+    const [roles, setRoles] = React.useState({});
 
     const [openForm, setOpenForm] = React.useState(false);
     const [openDismiss, setOpenDismiss] = React.useState(false);
@@ -93,7 +95,7 @@ export default function Detail() {
     const handleLoad = async() => {
         await LoadReport();
         await LoadAreas();
-
+        await LoadUserRoles();
         setLoading(false);
     }
 
@@ -157,6 +159,11 @@ export default function Detail() {
         var result = areas.filter(x => !reportInfo.some(y => y.id == x.id));
         setValidAreas(result);
     }
+
+    const LoadUserRoles = async() => {
+        const result = await Session.Roles();
+        setRoles(result);
+    };
 
     const handleReportChanges = async(e) => {
         setReport({...report, [e.target.name]: e.target.value});
@@ -439,6 +446,7 @@ export default function Detail() {
                                 value={report.name}
                                 onChange={handleReportChanges}
                                 required
+                                disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 />
                             </FormGrid>
                             <FormGrid sx={{ minWidth: '20%' }}>
@@ -451,6 +459,7 @@ export default function Detail() {
                                 placeholder="123"
                                 value={report.identifier}
                                 required
+                                disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 />
                             </FormGrid>
                             <FormGrid sx={{ minWidth: '20%' }}>
@@ -463,6 +472,7 @@ export default function Detail() {
                                     placeholder="Enter Description"
                                     value={report.kind}
                                     required
+                                    disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 >
                                     {Report.Kinds.map((value, i) => (
                                         <MenuItem key={i} value={value} selected>{value}</MenuItem>
@@ -481,6 +491,7 @@ export default function Detail() {
                                     value={report.status}
                                     onChange={handleReportChanges}
                                     required
+                                    disabled={!roles.includes(Session.Indexes.Roles.Admin)}
                                 >
                                     {Report.Status.map((value, i) => (
                                         <MenuItem key={i} value={value} selected>{value}</MenuItem>
@@ -501,6 +512,7 @@ export default function Detail() {
                                 value={report.description}
                                 required
                                 multiline
+                                disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 />
                             </FormGrid>
                             </Box>
@@ -516,6 +528,7 @@ export default function Detail() {
                                 type='date'
                                 value={report.dtfrom}
                                 required
+                                disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 />
                             </FormGrid>
                             <FormGrid sx={{ flexGrow: 1 }}>
@@ -529,6 +542,7 @@ export default function Detail() {
                                 value={report.dtto}
                                 type='date'
                                 required
+                                disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 />
                             </FormGrid>
                             </Box>
@@ -578,28 +592,30 @@ export default function Detail() {
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2}}>
                             <Typography variant="h7" sx={{width:'10%'}}> Areas</Typography>
-                            <Select
-                                sx={{
-                                    width:'100%'
-                                }}
-                                id="kind"
-                                name='kind'
-                                value={areaId}
-                                onChange={(e) => setAreaId(e.target.value)}
-                                size='small'
-                            >
-                                <MenuItem key={0} value={0} selected>Select Area</MenuItem>
+                            <Box sx={{display: roles.includes(Session.Indexes.Roles.Edit) ? 'contents' : 'none'}}>
+                                <Select
+                                    sx={{
+                                        width:'100%'
+                                    }}
+                                    id="kind"
+                                    name='kind'
+                                    value={areaId}
+                                    onChange={(e) => setAreaId(e.target.value)}
+                                    size='small'
+                                >
+                                    <MenuItem key={0} value={0} selected>Select Area</MenuItem>
 
-                                {validAreas.map((value, i) => (
-                                    <MenuItem key={i} value={value.id}>{value.name}</MenuItem>
-                                ))}
+                                    {validAreas.map((value, i) => (
+                                        <MenuItem key={i} value={value.id}>{value.name}</MenuItem>
+                                    ))}
 
-                            </Select>
-                            <Tooltip title="Add Area">
-                                <IconButton onClick={() => handleRequestArea()}>
-                                    <AddCircleIcon color='secondary' />
-                                </IconButton>
-                            </Tooltip>
+                                </Select>
+                                <Tooltip title="Add Area">
+                                    <IconButton onClick={() => handleRequestArea()}>
+                                        <AddCircleIcon color='secondary' />
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
                             </Box>
                             <Divider orientation='horizontal' sx={{pt:2}} />
                             <Box
@@ -628,7 +644,7 @@ export default function Detail() {
                                                     {row.name}
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                    <Tooltip title="Delete">
+                                                    <Tooltip title="Delete" size='small' sx={{display: roles.includes(Session.Indexes.Roles.Edit) ? '' : 'none'}}>
                                                     <IconButton onClick={() => setAreaRemoveId(row.relation)}>
                                                         <DeleteIcon fontSize='small'/>
                                                     </IconButton>
@@ -666,28 +682,30 @@ export default function Detail() {
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap:2}}>
                                 <Typography variant="h7" sx={{width:{sm:'10%', md:'25%'}}}>Resources</Typography>
-                                <OutlinedInput
-                                    sx={{width:'50%'}}
-                                    id="resource"
-                                    name='resource'
-                                    placeholder="Input URL"
-                                    value={resourceUrl}
-                                    onChange={(e) => setResourceUrl(e.target.value)}
-                                    size='small'
-                                />
-                                <OutlinedInput
-                                    id="resource"
-                                    name='resource'
-                                    placeholder="Input Name"
-                                    value={resourceName}
-                                    onChange={(e) => setResourceName(e.target.value)}
-                                    size='small'
-                                />
-                                <Tooltip title="Add Resource">
-                                    <IconButton onClick={handleRequestResource}>
-                                        <AddCircleIcon color='secondary'/>
-                                    </IconButton>
-                                </Tooltip>
+                                <Box sx={{display: roles.includes(Session.Indexes.Roles.Edit) ? 'contents' : 'none'}}>
+                                    <OutlinedInput
+                                        sx={{width:'50%'}}
+                                        id="resource"
+                                        name='resource'
+                                        placeholder="Input URL"
+                                        value={resourceUrl}
+                                        onChange={(e) => setResourceUrl(e.target.value)}
+                                        size='small'
+                                    />
+                                    <OutlinedInput
+                                        id="resource"
+                                        name='resource'
+                                        placeholder="Input Name"
+                                        value={resourceName}
+                                        onChange={(e) => setResourceName(e.target.value)}
+                                        size='small'
+                                    />
+                                    <Tooltip title="Add Resource">
+                                        <IconButton onClick={handleRequestResource}>
+                                            <AddCircleIcon color='secondary'/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
                             </Box>
                             <Divider orientation='horizontal' sx={{pt:2}} />
                             <Box
@@ -716,7 +734,7 @@ export default function Detail() {
                                                 <Link href={row.url} target='_blank'>{row.name}</Link>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Tooltip title="Delete">
+                                                <Tooltip title="Delete" size='small' sx={{display: roles.includes(Session.Indexes.Roles.Edit) ? '' : 'none'}}>
                                                 <IconButton onClick={() => setResourceId(row.id)}>
                                                     <DeleteIcon fontSize='small'/>
                                                 </IconButton>

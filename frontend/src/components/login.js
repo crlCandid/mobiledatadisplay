@@ -10,6 +10,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import * as Decoder from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import * as Memory from '../utils/memory';
+import { Session } from '../utils';
 
 export default function SignIn() {
     document.title = 'Login';
@@ -31,7 +32,9 @@ export default function SignIn() {
         return;
       }
 
-      nav('/app');
+      if(!result.roles.includes(Session.Indexes.Roles.Display)){
+        nav('/app');
+      }
     }
 
   const handleLogin = async(event) => {
@@ -57,7 +60,10 @@ export default function SignIn() {
       return;
     }
 
-    nav('/app');
+    if(!result.result.roles.includes(Session.Indexes.Roles.Display)){
+      nav('/app');
+    }
+    //TODO DISplatys
   };
 
   const handleLoginSuccess = (response) => {

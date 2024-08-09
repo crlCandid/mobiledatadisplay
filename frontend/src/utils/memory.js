@@ -4,6 +4,8 @@ exports.Indexes = {
     ...Const.MemoIndex
 };
 
+//TODO exist?????
+
 exports.Get = async(index) => {
     try{
         var result = await JSON.parse(localStorage.getItem(index));

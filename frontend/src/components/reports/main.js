@@ -16,16 +16,24 @@ import { useNavigate } from 'react-router-dom';
 
 import { Reports } from '../../controllers';
 import * as StylesUtil from '../../utils/styles';
-import * as Memory from '../../utils/memory';
+import { Session } from '../../utils';
 
 export default function Main() {
-  const [data, setData] = React.useState([]);
+    document.title = 'Reports';
+    const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [roles, setRoles] = React.useState({});
+
   const nav = useNavigate();
 
   React.useEffect(() => {
-    LoadData();
+    handleLoading();
   },[]);
+
+  const handleLoading = async() => {
+    LoadData();
+    LoadUserRoles();
+  }
 
   const LoadData = async() =>{
     const result = await Reports.List();
@@ -38,6 +46,11 @@ export default function Main() {
     setData(result.reports);
     setLoading(false);
   }
+
+  const LoadUserRoles = async() => {
+    const result = await Session.Roles();
+    setRoles(result);
+  };
 
   const handleClickCrud = async() => {
     nav('/app/reports/crud');
@@ -79,8 +92,8 @@ export default function Main() {
               Report Listing
             </Typography>
             <TextField id="outlined-basic" label="Search" variant="outlined" />
-            <Tooltip title="Create">
-              <IconButton onClick={handleClickCrud}>
+            <Tooltip title="Create" sx={{display :  roles.includes(Session.Indexes.Roles.Edit)? '' : 'none'}}>
+              <IconButton onClick={handleClickCrud} >
                 <AddCircleIcon color='secondary' fontSize='large'/>
               </IconButton>
             </Tooltip>
@@ -111,8 +124,8 @@ export default function Main() {
                   <TableCell align="right">{row.identifier}</TableCell>
                   <TableCell align="right">{row.kind}</TableCell>
                   <TableCell align="right">{row.status}</TableCell>
-                  <TableCell align="center">
-                    <Tooltip title="Detail / Edit">
+                  <TableCell align="center" sx={{display : roles.includes(Session.Indexes.Roles.View)? '' : 'none'}}>
+                    <Tooltip title="Detail / Edit" >
                       <IconButton onClick={() => handleDetail(row.id)}>
                         <FeedIcon />
                       </IconButton>
