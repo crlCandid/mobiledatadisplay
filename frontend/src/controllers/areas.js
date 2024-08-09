@@ -1,17 +1,17 @@
 import * as HTTP from './http';
 
-// export const Create = async (body) => {
-//     let endpoint = `/reports`;
+export const Create = async (body) => {
+    let endpoint = `/areas`;
 
-//     try{
-//         var result = await HTTP.POST(endpoint, body);
-//     }catch(e){
-//         console.log(`CONTROLLER ERROR: reports.Create\n${e}`);
-//         return undefined;
-//     }
+    try{
+        var result = await HTTP.POST(endpoint, body);
+    }catch(e){
+        console.log(`CONTROLLER ERROR: areas.Create\n${e}`);
+        return undefined;
+    }
 
-//     return result;
-// }
+    return result;
+}
 
 export const List = async () => {
     let endpoint = `/areas`;
@@ -52,24 +52,18 @@ export const List = async () => {
 //     return result;
 // }
 
-// export const Update = async () => {
-//     //TODO
-//     let endpoint = `/users/login/local`;
+export const Update = async (body) => {
+    let endpoint = `/areas`;
 
-//     var body = {
-//         email: email,
-//         password: password
-//     };
+    try{
+        var result = await HTTP.PUT(endpoint, body);
+    }catch(e){
+        console.log(`CONTROLLER ERROR: areas.Update\n${e}`);
+        return undefined;
+    }
 
-//     try{
-//         var result = await HTTP.POST(endpoint, body);
-//     }catch(e){
-//         console.log(`CONTROLLER ERROR: users.LocalLogin\n${e}`);
-//         return undefined;
-//     }
-
-//     return result;
-// }
+    return result;
+}
 
 // export const Remove = async () => {
 //     //TODO

@@ -14,23 +14,17 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Box, Typography, LinearProgress, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { Areas } from '../../controllers';
+import { Reports } from '../../controllers';
 import * as StylesUtil from '../../utils/styles';
 import { Session } from '../../utils';
-import { ConfirmationDialog } from '../utils';
-import {default as EditDialog } from './edit';
 
 export default function Main() {
-    document.title = 'Areas';
-    const nav = useNavigate();
+    document.title = 'Tabs';
     const [data, setData] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
-    const [roles, setRoles] = React.useState({});
-    
-    const [record, setRecord] = React.useState('');
-    const [recordOpen, setRecordOpen] = React.useState(false);
-    const [recordEdit, setRecordEdit] = React.useState(undefined);
-    const [recordEditOpen, setRecordEditOpen] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
+  const [roles, setRoles] = React.useState({});
+
+  const nav = useNavigate();
 
   React.useEffect(() => {
     handleLoading();
@@ -42,14 +36,14 @@ export default function Main() {
   }
 
   const LoadData = async() =>{
-    const result = await Areas.List();
+    const result = await Reports.List();
   
     if(!result.success){
       alert(`Error fetchin data from server. \nPlease, try again`);
       return;
     }
     
-    setData(result.result);
+    setData(result.reports);
     setLoading(false);
   }
 
@@ -59,89 +53,15 @@ export default function Main() {
   };
 
   const handleClickCrud = async() => {
-    if(record === ''){
-      alert(`Invalid Area name. \nPlease, check your input.`);
-      return;
-    }
-    
-    setRecordOpen(true);
+    nav('/app/reports/crud');
   }
 
-  const handelCrudConfirm = async() => {
-    const body = {
-      name: record
-    };
-
-    const result = await Areas.Create(body);
-    
-    if(result === undefined){
-      alert('Error while connecting to Server. \nPlease, try again.');
-      return;
-    }
-
-    if(!result.success){
-      alert('Unable to create new record. \nPlease, try again');
-      return;
-    }
-
-    setRecord('');
-    LoadData();
-  }
-
-  const handleDetail = async(o) => {
-    setRecordEdit(o);
-    setRecordEditOpen(true);
-  }
-
-  const handleDetailClose = async() => {
-    setRecordEdit(undefined);
-    setRecordEditOpen(false);
-  }
-
-  const handleDetailConfirm = async(object) => {
-    const body = {
-      area: {...object}
-    }
-
-    var result = await Areas.Update(body);
-    console.log('DAta', result);
-
-    if(result === undefined){
-      alert('Error while connecting to Server. \nPlease, try again.');
-      return;
-    }
-
-    if(!result.success){
-      alert('Unable to update record. \nPlease, try again');
-      return;
-    }
-
-    setRecordEdit(undefined);
-    setRecordEditOpen(false);
-    LoadData();
+  const handleDetail = async(id) => {
+    nav(`/app/reports/detail/${id}`);
   }
 
   return (
     <Box>
-      <ConfirmationDialog
-        keepMounted
-        onClose={() => setRecordOpen(false)}
-        onConfirm={handelCrudConfirm}
-        open={recordOpen}
-        message={'A new record will be created with the given input.'}
-      />
-
-      {recordEdit !== undefined && (
-        <EditDialog
-          keepMounted
-          onClose={handleDetailClose}
-          onConfirm={handleDetailConfirm}
-          open={recordEditOpen}
-          object={recordEdit}
-          roles={roles}
-        />
-      )}
-
       {loading && (
         <Box
           sx={{
@@ -170,7 +90,7 @@ export default function Main() {
           }}
         >
             <Typography variant="h6">
-              Area Listing
+              Report Listing
             </Typography>
             <Box
               sx={{
@@ -178,14 +98,14 @@ export default function Main() {
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'row',
-                display :  roles.includes(Session.Indexes.Roles.Edit)? 'flex' : 'none'
+                justifyContent: 'space-between',
               }}
             >
-              <TextField id="outlined-basic" label="Create Record" placeholder='Area Name' variant="outlined" 
-                value={record}
-                onChange={(e) => setRecord(e.target.value)}
-              />
-              <Tooltip title="Create">
+              <Typography variant="h6">
+                Create Area
+              </Typography>
+              <TextField id="outlined-basic" label="Search" variant="outlined" />
+              <Tooltip title="Create" sx={{display :  roles.includes(Session.Indexes.Roles.Edit)? '' : 'none'}}>
                 <IconButton onClick={handleClickCrud} >
                   <AddCircleIcon color='secondary' fontSize='large'/>
                 </IconButton>
@@ -200,6 +120,8 @@ export default function Main() {
             <TableHead>
               <TableRow >
                 <TableCell sx={StylesUtil.Table001.Headers}>Name</TableCell>
+                <TableCell sx={StylesUtil.Table001.Headers} align="right">Indentifier</TableCell>
+                <TableCell sx={StylesUtil.Table001.Headers} align="right">Type</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers} align="right">Status</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers} align="center">Actions</TableCell>
               </TableRow>
@@ -213,10 +135,12 @@ export default function Main() {
                   <TableCell component="th" scope="row">
                     {row.name}
                   </TableCell>
+                  <TableCell align="right">{row.identifier}</TableCell>
+                  <TableCell align="right">{row.kind}</TableCell>
                   <TableCell align="right">{row.status}</TableCell>
                   <TableCell align="center" sx={{display : roles.includes(Session.Indexes.Roles.View)? '' : 'none'}}>
                     <Tooltip title="Detail / Edit" >
-                      <IconButton onClick={() => handleDetail(row)}>
+                      <IconButton onClick={() => handleDetail(row.id)}>
                         <FeedIcon />
                       </IconButton>
                     </Tooltip>

@@ -32,9 +32,11 @@ export default function SignIn() {
         return;
       }
 
-      if(!result.roles.includes(Session.Indexes.Roles.Display)){
-        nav('/app');
+      if(result.roles.includes(Session.Indexes.Roles.Display)){
+        return;
       }
+
+      nav('/app');
     }
 
   const handleLogin = async(event) => {
@@ -60,10 +62,12 @@ export default function SignIn() {
       return;
     }
 
-    if(!result.result.roles.includes(Session.Indexes.Roles.Display)){
-      nav('/app');
+    if(result.result.roles.includes(Session.Indexes.Roles.Display)){
+      alert('User not currently allowed');
+      return;
     }
-    //TODO DISplatys
+
+    nav('/app');
   };
 
   const handleLoginSuccess = (response) => {

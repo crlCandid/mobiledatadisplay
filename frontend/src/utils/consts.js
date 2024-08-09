@@ -30,7 +30,11 @@ module.exports = {
             },
             {
                 text: 'Users',
-                route: '/app/Users'
+                route: '/app/users'
+            },
+            {
+                text: 'Tabs',
+                route: '/app/tabs'
             },
         ]
     },
@@ -44,6 +48,9 @@ module.exports = {
     },
     Report: {
         Kinds : ['Alert', 'NCR', 'Deviation'],
+        Status: ['Active', 'Disable']
+    },
+    Area: {
         Status: ['Active', 'Disable']
     }
 }

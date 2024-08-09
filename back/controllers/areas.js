@@ -96,7 +96,7 @@ exports.Find = async function(req,res){
 }
 
 exports.Update = async function(req,res){
-    const {area} = req.params;
+    const {area} = req.body;
 
     try{
         var db = await DB.GetClient();

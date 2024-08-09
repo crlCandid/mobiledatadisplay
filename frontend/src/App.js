@@ -38,6 +38,7 @@ function App() {
             <Route path='reports/crud' element={<Components.Reports.Crud />} />
             <Route path='areas' element={<Components.Areas.Main />} />
             <Route path='users' element={<Components.Users.Main />} />
+            <Route path='tabs' element={<Components.Tabs.Main />} />
           </Route>
         </Routes>
       </Router>
