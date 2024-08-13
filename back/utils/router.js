@@ -32,6 +32,7 @@ route('/users/login/local', Users.LocalLogin, 'POST');
 route('/users', Users.Create, 'POST');
 route('/users', Users.List, 'GET');
 route('/users/:userId', Users.Find, 'GET');
+route('/users/complete/:userId', Users.FindComplete, 'GET');
 route('/users', Users.Update, 'PUT');
 route('/users/password', Users.UpdatePassword, 'PUT');
 //Delete handled by Expert due User risks

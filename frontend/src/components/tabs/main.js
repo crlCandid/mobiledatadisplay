@@ -8,27 +8,46 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-import FeedIcon from '@mui/icons-material/Feed';
 import TextField from '@mui/material/TextField';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { Box, Typography, LinearProgress, Divider } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Typography, LinearProgress, Divider, Link } from '@mui/material';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import FeedIcon from '@mui/icons-material/Feed';
 
-import { Reports } from '../../controllers';
+import { Tabs } from '../../controllers';
 import * as StylesUtil from '../../utils/styles';
 import { Session } from '../../utils';
+import { ConfirmationDialog } from '../utils';
+import {default as EditDialog } from './edit';
 
 export default function Main() {
     document.title = 'Tabs';
     const [data, setData] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [roles, setRoles] = React.useState({});
+    const [loading, setLoading] = React.useState(true);
+    const [roles, setRoles] = React.useState({});
+    
+    const [record, setRecord] = React.useState({
+      header: '',
+      url: ''
+    });
 
-  const nav = useNavigate();
+    const [recordOpen, setRecordOpen] = React.useState(false);
+    const [recordEdit, setRecordEdit] = React.useState(undefined);
+    const [recordEditOpen, setRecordEditOpen] = React.useState({});
+
+    const [recordDelete, setRecordDelete] = React.useState(0);
+    const [recordDeleteOpen, setRecordDeleteOpen] = React.useState(false);
 
   React.useEffect(() => {
     handleLoading();
   },[]);
+
+  React.useEffect(() => {
+    if(recordDelete === 0){
+      return;
+    }
+    setRecordDeleteOpen(true);
+  },[recordDelete]);
 
   const handleLoading = async() => {
     LoadData();
@@ -36,14 +55,14 @@ export default function Main() {
   }
 
   const LoadData = async() =>{
-    const result = await Reports.List();
+    const result = await Tabs.List();
   
     if(!result.success){
       alert(`Error fetchin data from server. \nPlease, try again`);
       return;
     }
-    
-    setData(result.reports);
+
+    setData(result.result);
     setLoading(false);
   }
 
@@ -53,15 +72,117 @@ export default function Main() {
   };
 
   const handleClickCrud = async() => {
-    nav('/app/reports/crud');
+    if(![record.header, record.url].every(Boolean)){
+      alert(`Invalid Record. \nPlease, check your inputs.`);
+      return;
+    }
+    
+    setRecordOpen(true);
   }
 
-  const handleDetail = async(id) => {
-    nav(`/app/reports/detail/${id}`);
+  const handelCrudConfirm = async() => {
+    const body = {
+      ...record
+    };
+
+    const result = await Tabs.Create(body);
+    
+    if(result === undefined){
+      alert('Error while connecting to Server. \nPlease, try again.');
+      return;
+    }
+
+    if(!result.success){
+      alert('Unable to create new record. \nPlease, try again');
+      return;
+    }
+
+    setRecord({
+      header: '',
+      url: ''
+    });
+    LoadData();
+  }
+
+  const handleDetail = async(o) => {
+    setRecordEdit(o);
+    setRecordEditOpen(true);
+  }
+
+  const handleDetailClose = async() => {
+    setRecordEdit(undefined);
+    setRecordEditOpen(false);
+  }
+
+  const handleDetailConfirm = async(object) => {
+    const body = {
+      tab:{...object}
+    }
+
+    var result = await Tabs.Update(body);
+
+    if(result === undefined){
+      alert('Error while connecting to Server. \nPlease, try again.');
+      return;
+    }
+
+    if(!result.success){
+      alert('Unable to update record. \nPlease, try again');
+      return;
+    }
+
+    setRecordEdit(undefined);
+    setRecordEditOpen(false);
+    LoadData();
+  }
+
+  const handleDeleteConfirm = async() => {
+    const result = await Tabs.Remove(recordDelete);
+
+    if(result === undefined){
+      alert('Error while connecting to Server. \nPlease, try again.');
+      return;
+    }
+
+    if(!result.success){
+      alert('Unable to delete record. \nPlease, try again');
+      return;
+    }
+
+    setRecordDelete(0);
+    setRecordDeleteOpen(false);
+    LoadData();
   }
 
   return (
     <Box>
+      <ConfirmationDialog
+        keepMounted
+        onClose={() => setRecordOpen(false)}
+        onConfirm={handelCrudConfirm}
+        open={recordOpen}
+        message={'A new record will be created with the given input.'}
+      />
+
+      {recordEdit !== undefined && (
+        <EditDialog
+          keepMounted
+          onClose={handleDetailClose}
+          onConfirm={handleDetailConfirm}
+          open={recordEditOpen}
+          object={recordEdit}
+          roles={roles}
+        />
+      )}
+
+      <ConfirmationDialog
+        keepMounted
+        onClose={() => {setRecordDeleteOpen(false); setRecordDelete(0)}}
+        onConfirm={handleDeleteConfirm}
+        open={recordDeleteOpen}
+        message={'The Selected Record will be deleted.'}
+      />
+
       {loading && (
         <Box
           sx={{
@@ -72,7 +193,7 @@ export default function Main() {
           }}
         >
           <Typography variant="h6">
-            Report Listing Loading
+            Tab Listing Loading
             <LinearProgress color="secondary" />
           </Typography>
         </Box>    
@@ -90,7 +211,7 @@ export default function Main() {
           }}
         >
             <Typography variant="h6">
-              Report Listing
+              Tab Listing
             </Typography>
             <Box
               sx={{
@@ -98,14 +219,22 @@ export default function Main() {
                 display: 'flex',
                 alignItems: 'center',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                display :  roles.includes(Session.Indexes.Roles.Edit)? 'flex' : 'none'
               }}
-            >
-              <Typography variant="h6">
-                Create Area
+            > 
+              <Typography variant="h6" sx={{display: {xs:'none', md:'initial'}}}>
+                Create Record
               </Typography>
-              <TextField id="outlined-basic" label="Search" variant="outlined" />
-              <Tooltip title="Create" sx={{display :  roles.includes(Session.Indexes.Roles.Edit)? '' : 'none'}}>
+              <TextField id="outlined-basic" name='header' label="Header" placeholder='Header' variant="outlined" 
+                value={record.header}
+                onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
+              />
+              <TextField id="outlined-basic" name='url' label="URL" placeholder='URL' variant="outlined" 
+                value={record.url}
+                onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
+              />
+
+              <Tooltip title="Create">
                 <IconButton onClick={handleClickCrud} >
                   <AddCircleIcon color='secondary' fontSize='large'/>
                 </IconButton>
@@ -119,10 +248,8 @@ export default function Main() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow >
-                <TableCell sx={StylesUtil.Table001.Headers}>Name</TableCell>
-                <TableCell sx={StylesUtil.Table001.Headers} align="right">Indentifier</TableCell>
-                <TableCell sx={StylesUtil.Table001.Headers} align="right">Type</TableCell>
-                <TableCell sx={StylesUtil.Table001.Headers} align="right">Status</TableCell>
+                <TableCell sx={StylesUtil.Table001.Headers}>Header</TableCell>
+                <TableCell sx={StylesUtil.Table001.Headers}>Url</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers} align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -133,15 +260,20 @@ export default function Main() {
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {row.name}
+                    {row.header}
                   </TableCell>
-                  <TableCell align="right">{row.identifier}</TableCell>
-                  <TableCell align="right">{row.kind}</TableCell>
-                  <TableCell align="right">{row.status}</TableCell>
+                  <TableCell component="th" scope="row">
+                    <Link href={row.url} target='_blank'>Link</Link>
+                  </TableCell>
                   <TableCell align="center" sx={{display : roles.includes(Session.Indexes.Roles.View)? '' : 'none'}}>
                     <Tooltip title="Detail / Edit" >
-                      <IconButton onClick={() => handleDetail(row.id)}>
+                      <IconButton onClick={() => handleDetail(row)}>
                         <FeedIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Remove" >
+                      <IconButton onClick={() => setRecordDelete(row.id)}>
+                        <DeleteForeverIcon />
                       </IconButton>
                     </Tooltip>
                   </TableCell>

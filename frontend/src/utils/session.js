@@ -18,3 +18,8 @@ exports.HasRole = async(index) => {
 exports.Logout = async() => {
     return await Memory.Remove(Memory.Indexes.UserSession);
 }
+
+exports.Admin = async() => {
+    const data = await Memory.Get(Memory.Indexes.UserSession);
+    return data.roles.includes(this.Indexes.Roles.Admin);
+}

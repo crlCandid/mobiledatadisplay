@@ -157,7 +157,7 @@ exports.List = async function(req, res){
     }
 
     try{
-        var queryResult = await db.query(`Select id, email, roles, control, status From users Where id > 1`);
+        var queryResult = await db.query(`Select id, email, to_json(roles) as roles, control, status From users Where id > 1`);
         await db.end();
     }catch(e){
         res.status(500).json({
@@ -171,7 +171,7 @@ exports.List = async function(req, res){
     res.json({
         success : true,
         message: 'Users listing',
-        users: queryResult.rows
+        result: queryResult.rows
     });
 }
 
@@ -208,6 +208,43 @@ exports.Find = async function(req,res){
     res.json({
         success : true,
         message: 'Users Found',
+        result: result.rows[0]
+    });
+}
+
+exports.FindComplete = async function(req,res){
+    const {userId} = req.params;
+
+    try{
+        var db = await DB.GetClient();
+        await db.connect();
+        const query = {
+            text: `Select id, email, password, to_json(roles::TEXT[]) as roles, control, status From users Where id = $1`,
+            values: [userId],
+        }
+        var result = await db.query(query);
+        await db.end();
+    }catch(e){
+        res.status(500).json({
+            success : false,
+            message: 'Error User Find',
+            error: e
+        });
+        return;
+    }
+
+    if(result.rowCount == 0){
+        res.json({
+            success : false,
+            message: 'User not Found',
+            error: 'User not Found',
+        });
+        return;
+    }
+ 
+    res.json({
+        success : true,
+        message: 'User Found',
         result: result.rows[0]
     });
 }

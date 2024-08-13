@@ -18,23 +18,28 @@ module.exports = {
         Pages : [
             {
                 text: 'Main',
-                route: '/app'
+                route: '/app',
+                admin: false
             },
             {
                 text: 'Reports',
-                route: '/app/reports'
+                route: '/app/reports',
+                admin: false
             },
             {
                 text: 'Areas',
-                route: '/app/areas'
+                route: '/app/areas',
+                admin: false
             },
             {
                 text: 'Users',
-                route: '/app/users'
+                route: '/app/users',
+                admin: true
             },
             {
                 text: 'Tabs',
-                route: '/app/tabs'
+                route: '/app/tabs',
+                admin: true
             },
         ]
     },
@@ -51,6 +56,9 @@ module.exports = {
         Status: ['Active', 'Disable']
     },
     Area: {
+        Status: ['Active', 'Disable']
+    },
+    User: {
         Status: ['Active', 'Disable']
     }
 }

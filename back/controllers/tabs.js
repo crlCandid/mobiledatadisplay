@@ -54,7 +54,7 @@ exports.List = async function(req, res){
     res.json({
         success : true,
         message: 'Tabs listing',
-        users: queryResult.rows
+        result: queryResult.rows
     });
 }
 
@@ -96,7 +96,7 @@ exports.Find = async function(req,res){
 }
 
 exports.Update = async function(req,res){
-    const {tab} = req.params;
+    const {tab} = req.body;
 
     try{
         var db = await DB.GetClient();
@@ -132,7 +132,7 @@ exports.Update = async function(req,res){
 }
 
 exports.Delete = async function(req,res){
-    const {tabId} = req.body;
+    const {tabId} = req.params;
 
     try{
         var db = await DB.GetClient();

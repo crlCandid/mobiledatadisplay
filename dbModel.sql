@@ -1,11 +1,11 @@
-Create Type user_roles As ENUM('Edit', 'View', 'Remove', 'Display', 'Admin', 'General');
+Create Type user_roles As ENUM('Edit', 'View', 'Remove', 'Display', 'Admin');
 Create Type user_type As ENUM('Remote', 'Local');
 Create Type status_flag As ENUM('Active', 'Disable');
 Create Type report_type As ENUM('Alert', 'NCR', 'Deviation');
 
 Create Table users(
 	id SERIAL PRIMARY KEY,
-	email VARCHAR(200) NOT NULL,
+	email VARCHAR(200) NOT NULL UNIQUE,
 	password VARCHAR(200),
 	roles user_roles[] Default '{"View"}',
 	control user_type Default 'Remote',

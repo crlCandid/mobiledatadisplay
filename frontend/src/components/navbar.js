@@ -114,7 +114,7 @@ function NavBar() {
                     display: { xs: 'block', md: 'none' },
                 }}
                 >
-                {Const.NavBar.Pages.map((page, i) => (
+                {Const.NavBar.Pages.filter(x => x.admin ? Session.Admin() : true).map((page, i) => (
                     <MenuItem key={page.text} onClick={() => handlePageClick(i)}>
                     <Typography textAlign="center">{page.text}</Typography>
                     </MenuItem>
@@ -141,7 +141,7 @@ function NavBar() {
                 MoD2
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {Const.NavBar.Pages.map((page, i) => (
+                {Const.NavBar.Pages.filter(x => x.admin ? Session.Admin() : true).map((page, i) => (
                 <Button
                     key={i}
                     onClick={() => handlePageClick(i)}

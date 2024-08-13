@@ -6,14 +6,9 @@ import DialogActions from '@mui/material/DialogActions';
 import Dialog from '@mui/material/Dialog';
 import { Colors } from '../../utils/consts';
 import TextField from '@mui/material/TextField';
-import { Area } from '../../utils/consts';
 import {
-    Select,
-    MenuItem,
     Box
   } from '@mui/material';
-
-import { Session } from '../../utils';
 
 export default function EditDialog(props) {
   const { open, roles, object, onConfirm, onClose, ...other } = props;
@@ -43,7 +38,7 @@ export default function EditDialog(props) {
       open={open}
       {...other}
     >
-      <DialogTitle sx={{backgroundColor:Colors.Secondary.Main, color:'#fff'}}>Area Detail</DialogTitle>
+      <DialogTitle sx={{backgroundColor:Colors.Secondary.Main, color:'#fff'}}>Tab Detail</DialogTitle>
       <DialogContent 
         dividers
         sx={{
@@ -54,34 +49,31 @@ export default function EditDialog(props) {
           gap: 2
         }}
         >
-        <TextField id="outlined-basic" label="Area Name" placeholder='Area Name' variant="outlined" 
+        <TextField id="outlined-basic" label="Header" placeholder='Header' variant="outlined" 
           sx={{
             width:'100%'
           }}
-          name='name'
-          value={edit.name}
+          name='header'
+          value={edit.header}
           onChange={handleChanges}
         />
-        <Select
-          id="status"
-          name='status'
-          placeholder="Enter Description"
-          value={edit.status}
+        <TextField id="outlined-basic" label="URL" placeholder='URL' variant="outlined" 
+          sx={{
+            width:'100%'
+          }}
+          name='url'
+          value={edit.url}
           onChange={handleChanges}
-          disabled={!roles.includes(Session.Indexes.Roles.Admin)}
-        >
-          {Area.Status.map((value, i) => (
-              <MenuItem key={i} value={value}>{value}</MenuItem>
-          ))}
-
-        </Select>
+        />
       </DialogContent>
       <DialogActions>
+        
           <Box>
-        {editDelta && (
-            'Do you want to proceed with changes?'
-        )}
-        <Button onClick={handleCancel}>Cancel</Button>
+          {editDelta && (
+            "Do you want to proceed with changes?"
+          )}
+
+            <Button onClick={handleCancel}>Cancel</Button>
             <Button onClick={handleOk}>Yes</Button>
           </Box>
       </DialogActions>

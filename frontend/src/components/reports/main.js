@@ -86,12 +86,13 @@ export default function Main() {
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
+            justifyContent: 'space-between',
           }}
         >
             <Typography variant="h6" sx={{width:'80%'}}>
               Report Listing
             </Typography>
-            <TextField id="outlined-basic" label="Search" variant="outlined" />
+            {/* <TextField id="outlined-basic" label="Search" variant="outlined" /> */}
             <Tooltip title="Create" sx={{display :  roles.includes(Session.Indexes.Roles.Edit)? '' : 'none'}}>
               <IconButton onClick={handleClickCrud} >
                 <AddCircleIcon color='secondary' fontSize='large'/>

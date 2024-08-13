@@ -152,7 +152,7 @@ export default function Main() {
           }}
         >
           <Typography variant="h6">
-            Report Listing Loading
+            Area Listing Loading
             <LinearProgress color="secondary" />
           </Typography>
         </Box>    
