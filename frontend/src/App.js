@@ -27,7 +27,11 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
+          <Route path='/display' element={<Components.Display.Main />} />
+          <Route path='/display/upper' element={<Components.Display.Upper />} />
+          <Route path='/display/lower' element={<Components.Display.Lower />} />
           <Route path='/' element={<Components.Login />} />
+          <Route path='/logout' element={<Components.Logout />} />
           <Route path='/app' element={<Components.Navbar />} >
             <Route path='' element={<Components.Main />} />
             <Route path='reports' element={<Components.Reports.Main />} />

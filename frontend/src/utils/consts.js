@@ -2,7 +2,8 @@
 
 module.exports = {
     MemoIndex : {
-        UserSession : 'usersession'
+        UserSession : 'usersession',
+        StationConfig: 'stationconfig'
     },
     SessionIndex: {
         Roles: {
@@ -11,7 +12,6 @@ module.exports = {
             Remove: 'Remove',
             Display: 'Display',
             Admin: 'Admin',
-            General: 'General'
         }
     },
     NavBar : {
@@ -53,7 +53,14 @@ module.exports = {
     },
     Report: {
         Kinds : ['Alert', 'NCR', 'Deviation'],
-        Status: ['Active', 'Disable']
+        Kind : {
+            Alert:'Alert',
+            Ncr:'NCR', 
+            Deviation:'Deviation'
+        },
+        Status: ['Active', 'Disable'],
+        Active: 'Active',
+        Disable: 'Disable'
     },
     Area: {
         Status: ['Active', 'Disable']

@@ -15,3 +15,11 @@ export const Table001_s = {
     fontSize: 'small'
   }
 };
+
+export const Card001 = {
+  Headers : {    
+    backgroundColor: Colors.Secondary.Main,
+    color: '#fff',
+    fontSize: 'small'
+  }
+};

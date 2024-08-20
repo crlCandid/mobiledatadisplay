@@ -20,10 +20,24 @@ const Const = require('../utils/consts');
 
 function NavBar() {
     const nav = useNavigate();
+    const [loading, setLoading] = React.useState(false);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [logoutOpen, setLogoutOpen] = React.useState(false);
   
+  React.useEffect(() => {
+    handleLoad();
+  }, []);
+
+  const handleLoad = async() => {
+    var result = await Session.HasLogin();
+    
+    if(!result){
+        nav('/');
+        return;
+    }
+  }
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -44,14 +58,7 @@ function NavBar() {
   }
 
   const handleLogoutConfirm = async() => {
-    const result = await Session.Logout();
-
-    if(!result){
-        alert('Error while logging out. \nPlease, try again');
-        return;
-    }
-
-    nav('/');
+    nav('/logout');
   }
 
   return (

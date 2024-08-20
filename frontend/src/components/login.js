@@ -28,11 +28,12 @@ export default function SignIn() {
         return;
       }
 
-      if(!result){
+      if(!result || result === null){
         return;
       }
 
       if(result.roles.includes(Session.Indexes.Roles.Display)){
+        nav('/display');
         return;
       }
 
@@ -63,7 +64,7 @@ export default function SignIn() {
     }
 
     if(result.result.roles.includes(Session.Indexes.Roles.Display)){
-      alert('User not currently allowed');
+      nav('/display');
       return;
     }
 
@@ -152,11 +153,11 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
-        <GoogleLogin
+        {/* <GoogleLogin
           onSuccess={handleLoginSuccess}
           onFailure={handleLoginFailure}
           useOneTap
-        />
+        /> */}
       </Box>
     </Container>
   );

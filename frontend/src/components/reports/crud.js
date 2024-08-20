@@ -171,12 +171,8 @@ export default function Crud() {
                     <Select
                         id="kind"
                         name='kind'
-                        placeholder="Enter Description"
-                        value={0}
                         required
                     >
-                        <MenuItem key={0} value={0} selected disabled>Select Kind</MenuItem>
-
                         {Report.Kinds.map((value, i) => (
                             <MenuItem key={i} value={value}>{value}</MenuItem>
                         ))}

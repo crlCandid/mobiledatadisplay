@@ -23,3 +23,9 @@ exports.Admin = async() => {
     const data = await Memory.Get(Memory.Indexes.UserSession);
     return data.roles.includes(this.Indexes.Roles.Admin);
 }
+
+exports.HasLogin = async() => {
+    const data = await Memory.Get(Memory.Indexes.UserSession);
+    const result = data !== null && data !== false;
+    return result;
+}

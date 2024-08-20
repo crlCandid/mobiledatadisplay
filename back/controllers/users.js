@@ -256,8 +256,8 @@ exports.Update = async function(req,res){
         var db = await DB.GetClient();
         await db.connect();
         const query = {
-            text: `Update users Set email = $1, roles = $2::user_roles[], control = $3, status = $4 Where id = $5`,
-            values: [user.email, user.roles, user.control, user.status, user.id],
+            text: `Update users Set email = $1, roles = $2::user_roles[], control = $3, status = $4, password = $6 Where id = $5`,
+            values: [user.email, user.roles, user.control, user.status, user.id, user.password],
         }
         var result = await db.query(query);
         await db.end();
