@@ -40,10 +40,10 @@ export default function Lower() {
 
     React.useEffect(() => {
         LoadComs();
-        Init();
         return () => {
             if(channel.current){
                 channel.current.removeEventListener('message', handleReceive);
+                channel.current.close();
                 channel.current = null;
             }
         };
@@ -60,9 +60,10 @@ export default function Lower() {
     const LoadComs = async() => {
         if(!channel.current){
             channel.current = new BroadcastChannel('dsp');
+            channel.current.addEventListener('message', handleReceive);
         }
 
-        channel.current.addEventListener('message', handleReceive);
+        setTimeout(Init, 500);
     }
 
     const Init = async() => {
@@ -83,7 +84,11 @@ export default function Lower() {
 
         switch(data.action){
             case 'report':
+                console.log('Received:', data);
                 setReadId(data.id);
+                break;
+            case 'nav':
+                window.open(data.url, '_self');
                 break;
         }
     }
@@ -103,20 +108,14 @@ export default function Lower() {
         try{
             var result = await Reports.Find(readId);
         }catch(e){
-            alert('Error rised while fetching Report info. \nWill be returned to Report dashboard');
-            nav('/app/reports');
             return;
         }
 
         if(result === undefined){
-            alert('No report data was retrived. \nWill be returned to Report dashboard');
-            nav('/app/reports');
             return;
         }
 
         if(!result.success){
-            alert('No report data was found. \nWill be returned to Report dashboard');
-            nav('/app/reports');
             return;
         }
 
@@ -130,14 +129,14 @@ export default function Lower() {
         {loading && (
             <Box
             sx={{
-                pb: 4,
+                mt: 10,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
             }}
             >
-            <Typography variant="h6">
-                {readId < 1 ? 'Waiting for report selection' : 'Loading Info'}
+            <Typography variant="h4">
+                {readId < 1 ? 'Usa el panel superior para seleccionar la sección de tu interes' : 'Loading Info'}
                 <LinearProgress color="secondary" />
             </Typography>
             </Box>    
@@ -145,7 +144,7 @@ export default function Lower() {
 
         {!loading && (
             <Box>
-                <Stack spacing={{ xs: 3, sm: 6 }} useFlexGap>
+                <Stack spacing={{ xs: 2, sm: 2 }} useFlexGap>
                     <Box
                     sx={{
                         display: 'flex',
@@ -168,8 +167,7 @@ export default function Lower() {
                             }}
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                            <Typography variant="h6" sx={{width:'50%'}}>Report Detail</Typography>
-                            <Typography variant="h7" >Created By: {report.creatorinfo}</Typography>
+                            <Typography sx={{width:'50%'}}>Report Detail</Typography>
                             </Box>
                             <Divider orientation='horizontal' />
                             <Box
@@ -224,24 +222,6 @@ export default function Lower() {
 
                                 </Select>
                             </FormGrid>
-                            <FormGrid sx={{ minWidth: '20%' }}>
-                                <FormLabel htmlFor="kind" required>
-                                Status
-                                </FormLabel>
-                                <Select
-                                size='small'
-                                    id="status"
-                                    name='status'
-                                    placeholder="Enter Description"
-                                    value={report.status}
-                                    readOnly
-                                >
-                                    {Report.Status.map((value, i) => (
-                                        <MenuItem key={i} value={value} selected>{value}</MenuItem>
-                                    ))}
-
-                                </Select>
-                            </FormGrid>
                             </Box>
                             <Box sx={{ display: 'flex', gap: 2 }}>
                             <FormGrid sx={{ flexGrow: 1 }}>
@@ -258,8 +238,6 @@ export default function Lower() {
                                 multiline
                                 />
                             </FormGrid>
-                            </Box>
-                            <Box sx={{ display: 'flex', gap: 2 }}>
                             <FormGrid sx={{ flexGrow: 1 }}>
                                 <FormLabel htmlFor="dtfrom" required>
                                 Start date
@@ -305,7 +283,7 @@ export default function Lower() {
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            width: { xs: '100%', md: '50%' },
+                            width: { xs: '100%', md: '100%' },
                             gap: 2,
                         }}
                     >
@@ -314,8 +292,7 @@ export default function Lower() {
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
-                            p: 2,
-                            // height: { xs: 300, sm: 350, md: 375 },
+                            p: 1,
                             width: '100%',
                             borderRadius: '20px',
                             border: '1px solid ',
@@ -324,68 +301,9 @@ export default function Lower() {
                             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
                             }}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2}}>
-                            <Typography variant="h7" sx={{width:'10%'}}> Areas</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                                <Typography sx={{width:{sm:'10%', md:'25%'}}}>Resources</Typography>
                             </Box>
-                            <Divider orientation='horizontal' sx={{pt:2}} />
-                            <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                width: '100%',
-                                gap: 2
-                            }}
-                            >
-                                <TableContainer sx={{mt:2}}>
-                                    <Table aria-label="simple table" size='small'>
-                                        <TableHead>
-                                        <TableRow >
-                                            <TableCell sx={StylesUtil.Table001_s.Headers}>Name</TableCell>
-                                        </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {report.areas !== null && report.areas.map((row) => (
-                                                <TableRow
-                                                key={row.id}
-                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                >
-                                                <TableCell component="th" scope="row">
-                                                    {row.name}
-                                                </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: { xs: '100%', md: '50%' },
-                            gap: 2,
-                        }}
-                    >
-                        <Box
-                            sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            p: 2,
-                            width: '100%',
-                            borderRadius: '20px',
-                            border: '1px solid ',
-                            borderColor: 'divider',
-                            backgroundColor: 'background.paper',
-                            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap:2}}>
-                                <Typography variant="h7" sx={{width:{sm:'10%', md:'25%'}}}>Resources</Typography>
-                            </Box>
-                            <Divider orientation='horizontal' sx={{pt:2}} />
                             <Box
                             sx={{
                                 display: 'flex',

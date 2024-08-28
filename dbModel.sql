@@ -62,5 +62,6 @@ Create Table report_areas(
 Create Table tabs(
 	id SERIAL PRIMARY KEY,
 	header VARCHAR(100),
-	url VARCHAR
+	url VARCHAR,
+	icon VARCHAR
 );

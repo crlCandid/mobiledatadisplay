@@ -8,11 +8,11 @@ import {
 import PublishIcon from '@mui/icons-material/Publish';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useNavigate } from 'react-router-dom';
-import Upper from './upper';
 
 const Main = () => {
   document.title = 'Display'
   const nav = useNavigate();
+
   return (
     <Box
       sx={{
