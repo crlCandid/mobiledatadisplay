@@ -25,7 +25,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
 import { styled } from '@mui/system';
-import { Report } from '../../utils/consts';
+import { Area, Report } from '../../utils/consts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ConfirmationDialog } from '../utils';
 import { Reports, Areas } from '../../controllers';
@@ -605,7 +605,7 @@ export default function Detail() {
                                 >
                                     <MenuItem key={0} value={0} selected>Select Area</MenuItem>
 
-                                    {validAreas.map((value, i) => (
+                                    {validAreas.filter(x => x.status === Area.Active).map((value, i) => (
                                         <MenuItem key={i} value={value.id}>{value.name}</MenuItem>
                                     ))}
 

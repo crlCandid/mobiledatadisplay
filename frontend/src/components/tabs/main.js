@@ -28,7 +28,8 @@ export default function Main() {
     
     const [record, setRecord] = React.useState({
       header: '',
-      url: ''
+      url: '',
+      icon: ''
     });
 
     const [recordOpen, setRecordOpen] = React.useState(false);
@@ -99,7 +100,8 @@ export default function Main() {
 
     setRecord({
       header: '',
-      url: ''
+      url: '',
+      icon:''
     });
     LoadData();
   }
@@ -210,46 +212,51 @@ export default function Main() {
             justifyContent: 'space-between',
           }}
         >
-            <Typography variant="h6">
-              Tab Listing
+          <Typography variant="h6">
+            Tab Listing
+          </Typography>
+          <Box
+            sx={{
+              gap:2,
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'row',
+              display :  roles.includes(Session.Indexes.Roles.Edit)? 'flex' : 'none'
+            }}
+          > 
+            <Typography variant="h6" sx={{display: {xs:'none', md:'initial'}}}>
+              Create Record
             </Typography>
-            <Box
-              sx={{
-                gap:2,
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'row',
-                display :  roles.includes(Session.Indexes.Roles.Edit)? 'flex' : 'none'
-              }}
-            > 
-              <Typography variant="h6" sx={{display: {xs:'none', md:'initial'}}}>
-                Create Record
-              </Typography>
-              <TextField id="outlined-basic" name='header' label="Header" placeholder='Header' variant="outlined" 
-                value={record.header}
-                onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
-              />
-              <TextField id="outlined-basic" name='url' label="URL" placeholder='URL' variant="outlined" 
-                value={record.url}
-                onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
-              />
-
-              <Tooltip title="Create">
-                <IconButton onClick={handleClickCrud} >
-                  <AddCircleIcon color='secondary' fontSize='large'/>
-                </IconButton>
-              </Tooltip>
-            </Box>    
+            <TextField id="outlined-basic" name='header' label="Header" placeholder='Header' variant="outlined" 
+              value={record.header}
+              onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
+            />
+            <TextField id="outlined-basic" name='url' label="Target URL" placeholder='Target URL' variant="outlined" 
+              value={record.url}
+              onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
+            />
+            <TextField id="outlined-basic" name='icon' label="Icon URL" placeholder='Icon URL' variant="outlined" 
+              value={record.icon}
+              onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
+            />
+            <Box component='img' src={record.icon} sx={{width:35}}></Box>
+            <Tooltip title="Create">
+              <IconButton onClick={handleClickCrud} >
+                <AddCircleIcon color='secondary' fontSize='large'/>
+              </IconButton>
+            </Tooltip>
+          </Box>    
         </Box>    
         
         <Divider orientation='horizontal'></Divider>
 
-        <TableContainer component={Paper} sx={{mt:2}}>
+        <TableContainer component={Paper} sx={{mt:1}}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow >
                 <TableCell sx={StylesUtil.Table001.Headers}>Header</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers}>Url</TableCell>
+                <TableCell sx={StylesUtil.Table001.Headers} align="center">Icon</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers} align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -264,6 +271,9 @@ export default function Main() {
                   </TableCell>
                   <TableCell component="th" scope="row">
                     <Link href={row.url} target='_blank'>Link</Link>
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    <Box component='img' src={row.icon} sx={{width:35}}></Box>
                   </TableCell>
                   <TableCell align="center" sx={{display : roles.includes(Session.Indexes.Roles.View)? '' : 'none'}}>
                     <Tooltip title="Detail / Edit" >

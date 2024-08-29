@@ -40,7 +40,7 @@ exports.List = async function(req, res){
     try{
         var db = await DB.GetClient();
         await db.connect();
-        var queryResult = await db.query(`Select * From areas`);
+        var queryResult = await db.query(`Select * From areas Order By id Asc`);
         await db.end();
     }catch(e){
         res.status(500).json({

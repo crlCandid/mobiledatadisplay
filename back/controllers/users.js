@@ -157,7 +157,7 @@ exports.List = async function(req, res){
     }
 
     try{
-        var queryResult = await db.query(`Select id, email, to_json(roles) as roles, control, status From users Where id > 1`);
+        var queryResult = await db.query(`Select id, email, to_json(roles) as roles, control, status From users Where id > 1 Order By id Asc`);
         await db.end();
     }catch(e){
         res.status(500).json({

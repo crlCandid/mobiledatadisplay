@@ -57,7 +57,7 @@ export default function EditDialog(props) {
           value={edit.header}
           onChange={handleChanges}
         />
-        <TextField id="outlined-basic" label="URL" placeholder='URL' variant="outlined" 
+        <TextField id="outlined-basic" label="Target URL" placeholder='URL' variant="outlined" 
           sx={{
             width:'100%'
           }}
@@ -65,6 +65,15 @@ export default function EditDialog(props) {
           value={edit.url}
           onChange={handleChanges}
         />
+        <TextField id="outlined-basic" label="Icon URL" placeholder='URL' variant="outlined" 
+          sx={{
+            width:'100%'
+          }}
+          name='icon'
+          value={edit.icon}
+          onChange={handleChanges}
+        />
+        <Box component='img' src={edit.icon} sx={{width:35}}></Box>
       </DialogContent>
       <DialogActions>
         

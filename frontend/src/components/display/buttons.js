@@ -209,7 +209,7 @@ export default function Buttons(props) {
         <Zoom in={view} style={{transitionDelay: view ? (100 * (i + 1)) : 0}}>
           <Button variant='contained' color='secondary' sx={{ width:(vw * 0.25), height:'50%', borderInlineColor:'#fff', border:4, borderRadius:4}} onClick={() => handleClick(data.url)} >
           <Box>
-            <ImageSearchIcon sx={{fontSize:100}}/>
+            <Box component='img' src={data.icon} sx={{width:75, borderRadius:7}}></Box>
             <Typography variant='h6'>
               {data.header}
             </Typography>

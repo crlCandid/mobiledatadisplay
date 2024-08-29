@@ -1,14 +1,14 @@
 const DB = require('./db');
 
 exports.Create = async function(req,res){
-    const {header, url} = req.body;
+    const {header, url, icon} = req.body;
 
     try{
         var db = await DB.GetClient();
         await db.connect();
         const query = {
-            text: `Insert Into tabs (header, url) Values ($1, $2)`,
-            values: [header, url],
+            text: `Insert Into tabs (header, url, icon) Values ($1, $2, $3)`,
+            values: [header, url, icon],
         }
         var result = await db.query(query);
         await db.end();
@@ -40,7 +40,7 @@ exports.List = async function(req, res){
     try{
         const db = await DB.GetClient();
         await db.connect();
-        var queryResult = await db.query(`Select * From tabs`);
+        var queryResult = await db.query(`Select * From tabs Order By id Asc`);
         await db.end();
     }catch(e){
         res.status(500).json({
@@ -102,8 +102,8 @@ exports.Update = async function(req,res){
         var db = await DB.GetClient();
         await db.connect();
         const query = {
-            text: `Update tabs Set header = $1, url = $2 Where id = $3`,
-            values: [tab.header, tab.url, tab.id],
+            text: `Update tabs Set header = $1, url = $2, icon = $4 Where id = $3`,
+            values: [tab.header, tab.url, tab.id, tab.icon],
         }
         var result = await db.query(query);
         await db.end();

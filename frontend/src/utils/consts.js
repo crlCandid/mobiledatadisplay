@@ -63,7 +63,9 @@ module.exports = {
         Disable: 'Disable'
     },
     Area: {
-        Status: ['Active', 'Disable']
+        Status: ['Active', 'Disable'],
+        Active: 'Active',
+        Disable: 'Disable'
     },
     User: {
         Status: ['Active', 'Disable']

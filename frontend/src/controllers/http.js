@@ -1,3 +1,4 @@
+//TODO dev/prod port
 const GET = async (endpoint) => {
   let requestEndpoint = endpoint;
   let response = await fetch(`${requestEndpoint}`);
