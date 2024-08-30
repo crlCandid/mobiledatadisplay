@@ -2,7 +2,7 @@
 
 module.exports = {
     HOSTNAME    : '192.168.100.209', 
-    PORT        : 3801,              
+    PORT        : process.env.PORT || 3001,              
     DB_CONN     : {
             user: 'postgres',
             password: 'Candid2024!',
