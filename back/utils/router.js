@@ -27,36 +27,36 @@ const route = (endpoint, handler, method) => {
   return router.get(endpoint, logRequest, handler);
 };
 
-route('/users/login', Users.RemoteLogin, 'POST');
-route('/users/login/local', Users.LocalLogin, 'POST');
-route('/users', Users.Create, 'POST');
-route('/users', Users.List, 'GET');
-route('/users/:userId', Users.Find, 'GET');
-route('/users/complete/:userId', Users.FindComplete, 'GET');
-route('/users', Users.Update, 'PUT');
-route('/users/password', Users.UpdatePassword, 'PUT');
+route('/api/users/login', Users.RemoteLogin, 'POST');
+route('/api/users/login/local', Users.LocalLogin, 'POST');
+route('/api/users', Users.Create, 'POST');
+route('/api/users', Users.List, 'GET');
+route('/api/users/:userId', Users.Find, 'GET');
+route('/api/users/complete/:userId', Users.FindComplete, 'GET');
+route('/api/users', Users.Update, 'PUT');
+route('/api/users/password', Users.UpdatePassword, 'PUT');
 //Delete handled by Expert due User risks
 
-route('/areas', Areas.Create, 'POST');
-route('/areas', Areas.List, 'GET');
-route('/areas/:areaId', Areas.Find, 'GET');
-route('/areas', Areas.Update, 'PUT');
-route('/areas/:areaId', Areas.Delete, 'DELETE');
+route('/api/areas', Areas.Create, 'POST');
+route('/api/areas', Areas.List, 'GET');
+route('/api/areas/:areaId', Areas.Find, 'GET');
+route('/api/areas', Areas.Update, 'PUT');
+route('/api/areas/:areaId', Areas.Delete, 'DELETE');
 
-route('/tabs', Tabs.Create, 'POST');
-route('/tabs', Tabs.List, 'GET');
-route('/tabs/:tabId', Tabs.Find, 'GET');
-route('/tabs', Tabs.Update, 'PUT');
-route('/tabs/:tabId', Tabs.Delete, 'DELETE');
+route('/api/tabs', Tabs.Create, 'POST');
+route('/api/tabs', Tabs.List, 'GET');
+route('/api/tabs/:tabId', Tabs.Find, 'GET');
+route('/api/tabs', Tabs.Update, 'PUT');
+route('/api/tabs/:tabId', Tabs.Delete, 'DELETE');
 
-route('/reports', Reports.Create, 'POST');
-route('/reports', Reports.List, 'GET');
-route('/reports/:reportId', Reports.Find, 'GET');
-route('/reports', Reports.Update, 'PUT');
-route('/reports/:reportId', Reports.Delete, 'DELETE');
-route('/reports/areas', Reports.AddArea, 'POST');
-route('/reports/areas/:relationId', Reports.RemoveArea, 'DELETE');
-route('/reports/resource', Reports.AddResource, 'POST');
-route('/reports/resource/:resourceId', Reports.RemoveResource, 'DELETE');
+route('/api/reports', Reports.Create, 'POST');
+route('/api/reports', Reports.List, 'GET');
+route('/api/reports/:reportId', Reports.Find, 'GET');
+route('/api/reports', Reports.Update, 'PUT');
+route('/api/reports/:reportId', Reports.Delete, 'DELETE');
+route('/api/reports/areas', Reports.AddArea, 'POST');
+route('/api/reports/areas/:relationId', Reports.RemoveArea, 'DELETE');
+route('/api/reports/resource', Reports.AddResource, 'POST');
+route('/api/reports/resource/:resourceId', Reports.RemoveResource, 'DELETE');
 
 module.exports = router;

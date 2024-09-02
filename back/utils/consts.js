@@ -8,6 +8,6 @@ module.exports = {
             password: 'Candid2024!',
             host: 'localhost',
             port: 5432,
-            database: 'mobiledatadisplay',
+            database: `mobiledatadisplay_${process.env.DB || 'dev'}`,
         }
 }

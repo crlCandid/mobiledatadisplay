@@ -1,12 +1,12 @@
 //TODO dev/prod port
 const GET = async (endpoint) => {
-  let url = `${endpoint}`;
+  let url = `/api${endpoint}`;
   let response = await fetch(url);
   return response.json();
 }
 
 const POST = async (endpoint, postData, token = '') => {
-  let url = `${endpoint}`;
+  let url = `/api${endpoint}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -22,7 +22,7 @@ const POST = async (endpoint, postData, token = '') => {
 
 
 const PUT = async (endpoint, postData, token ) => {
-  let url = `${endpoint}`;
+  let url = `/api${endpoint}`;
 
   const response = await fetch(url, {
     method: 'PUT',
@@ -37,7 +37,7 @@ const PUT = async (endpoint, postData, token ) => {
 }
 
 const DELETE = async (endpoint, token) => {
-  let url = `${endpoint}`;
+  let url = `/api${endpoint}`;
 
   const response = await fetch(url, {
     method: 'DELETE',
