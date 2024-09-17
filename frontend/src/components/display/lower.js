@@ -64,7 +64,7 @@ export default function Lower() {
         if(readId < 1){
             return;
         }
-
+        console.log('Hook');
         handleLoad();
     }, [readId]);
 
@@ -100,7 +100,7 @@ export default function Lower() {
 
         switch(data.action){
             case 'report':
-                console.log('Received:', data);
+                console.log("Report: ", data);
                 setReadId(data.id);
                 break;
             case 'nav':
@@ -118,12 +118,14 @@ export default function Lower() {
     }
 
     const handleLoad = async() => {
+        setEmbed(undefined);
         setLoading(true);
         await LoadReport();
         setLoading(false);
     }
 
     const LoadReport = async() => {
+        console.log('Loading....');
         try{
             var result = await Reports.Find(readId);
         }catch(e){
@@ -143,7 +145,13 @@ export default function Lower() {
         setReport(result.result);
     }
     
+    const CloseReport = async() => {
+        setReadId(0);
+        setLoading(true);
+    }
+
     const OpenEmbed = async(url) => {
+        setReadId(0);
         setEmbed(url);
         setLoading(false);
     }
@@ -166,7 +174,7 @@ export default function Lower() {
             }}
             >
             <Typography variant="h4">
-                {readId < 1 ? 'Usa el panel superior para seleccionar la sección de tu interes' : 'Loading Info'}
+                Usa el panel superior para seleccionar la sección de tu interes
                 <LinearProgress color="secondary" />
             </Typography>
             </Box>    
@@ -196,8 +204,9 @@ export default function Lower() {
                             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
                             }}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                            <Typography sx={{width:'50%'}}>Report Detail</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap:2, mb:2}}>
+                                <Button color='secondary' variant='contained' onClick={CloseReport} startIcon={<ReplayCircleFilledIcon/>}>Regresar</Button>
+                                <Typography sx={{width:'50%'}}>Report Detail</Typography>
                             </Box>
                             <Divider orientation='horizontal' />
                             <Box

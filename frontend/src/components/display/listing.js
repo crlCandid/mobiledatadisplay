@@ -71,13 +71,6 @@ export default function Listing(props) {
       return;
     }
 
-    switch(data.action){
-      case 'init':
-        console.log('recived init');
-        LowerInit();
-        break;
-    }
-
   }
   
   const handleSend = async(o) =>{

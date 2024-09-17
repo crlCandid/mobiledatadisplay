@@ -27,7 +27,7 @@
     function confirmation(){
         const res = confirm('Desea volver al inicio de Mob2?');
         if(res){
-            window.open('http://192.168.100.209:3000/display/lower', '_self');
+            window.open('https://internaltools.ddns.net/display/lower', '_self');
         }
 
         active = false;
