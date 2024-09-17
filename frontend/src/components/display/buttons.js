@@ -105,11 +105,11 @@ export default function Buttons(props) {
     await channel.current.postMessage(o);
   }
 
-  const handleClick = async(url) => {
+  const handleClick = async(data) => {
     const msg = {
       sender: 0,
-      action: 'nav',
-      url: url,
+      action: data.embed ? 'embed' : 'nav',
+      url: data.url,
     }
 
     handleSend(msg);
@@ -207,7 +207,7 @@ export default function Buttons(props) {
       )}
       {!imgShow && tabs.map((data,i) => (
         <Zoom in={view} style={{transitionDelay: view ? (100 * (i + 1)) : 0}}>
-          <Button variant='contained' color='secondary' sx={{ width:(vw * 0.25), height:'50%', borderInlineColor:'#fff', border:4, borderRadius:4}} onClick={() => handleClick(data.url)} >
+          <Button variant='contained' color='secondary' sx={{ width:(vw * 0.248), height:'50%', borderInlineColor:'#fff', border:4, borderRadius:4}} onClick={() => handleClick(data)} >
           <Box>
             <Box component='img' src={data.icon} sx={{width:75, borderRadius:7}}></Box>
             <Typography variant='h6'>

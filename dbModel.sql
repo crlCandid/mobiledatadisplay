@@ -63,5 +63,6 @@ Create Table tabs(
 	id SERIAL PRIMARY KEY,
 	header VARCHAR(100),
 	url VARCHAR,
-	icon VARCHAR
+	icon VARCHAR,
+	embed BOOLEAN
 );

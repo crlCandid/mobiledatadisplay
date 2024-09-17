@@ -6,11 +6,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { Box, Typography, LinearProgress, Divider, Link } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { 
+  Box, 
+  Typography, 
+  LinearProgress, 
+  Divider, 
+  Link, 
+  Switch, 
+  Tooltip, 
+  FormControlLabel 
+} from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import FeedIcon from '@mui/icons-material/Feed';
 
@@ -29,7 +39,8 @@ export default function Main() {
     const [record, setRecord] = React.useState({
       header: '',
       url: '',
-      icon: ''
+      icon: '',
+      embed: false
     });
 
     const [recordOpen, setRecordOpen] = React.useState(false);
@@ -240,6 +251,9 @@ export default function Main() {
               onChange={(e) => setRecord({...record, [e.target.name]: e.target.value})}
             />
             <Box component='img' src={record.icon} sx={{width:35}}></Box>
+            <Tooltip title="URL can be embedded">
+              <FormControlLabel control={<Switch name='embed' checked={record.embed} onChange={(e) => setRecord({...record, [e.target.name]: e.target.checked})}/>} label="Embeded" />
+            </Tooltip>
             <Tooltip title="Create">
               <IconButton onClick={handleClickCrud} >
                 <AddCircleIcon color='secondary' fontSize='large'/>
@@ -257,6 +271,7 @@ export default function Main() {
                 <TableCell sx={StylesUtil.Table001.Headers}>Header</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers}>Url</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers} align="center">Icon</TableCell>
+                <TableCell sx={StylesUtil.Table001.Headers} align="center">Embed</TableCell>
                 <TableCell sx={StylesUtil.Table001.Headers} align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -274,6 +289,14 @@ export default function Main() {
                   </TableCell>
                   <TableCell component="th" scope="row" align="center">
                     <Box component='img' src={row.icon} sx={{width:35}}></Box>
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="center">
+                    {row.embed && (
+                      <CheckCircleIcon fontSize='large' sx={{color:'#03fc0f'}}/>
+                    )}
+                    {!row.embed && (
+                      <CancelIcon color='secondary' fontSize='large'/>
+                    )}
                   </TableCell>
                   <TableCell align="center" sx={{display : roles.includes(Session.Indexes.Roles.View)? '' : 'none'}}>
                     <Tooltip title="Detail / Edit" >

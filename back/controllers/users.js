@@ -39,7 +39,7 @@ exports.LocalLogin = async function(req, res){
         var db = await DB.GetClient();
         await db.connect();
         const query = {
-            text: `SELECT id, email, to_json(roles::TEXT[]) as roles FROM users WHERE email = $1 And password = $2 And status = 'Active' And control = 'Local'`,
+            text: `SELECT id, email, to_json(roles::TEXT[]) as roles FROM users WHERE email = $1 And password = $2 And status = 'Active'`,
             values: [email, password],
         }
         var result = await db.query(query);
@@ -75,7 +75,7 @@ exports.RemoteLogin = async function(req, res){
         var db = await DB.GetClient();
         await db.connect();
         const query = {
-            text: `SELECT id, email, roles FROM users WHERE email = $1 And status = 'Active' And control = 'Remote'`,
+            text: `SELECT id, email, roles FROM users WHERE email = $1 And status = 'Active'`,
             values: [email],
         }
         var result = await db.query(query);

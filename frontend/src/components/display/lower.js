@@ -9,7 +9,10 @@ import { Box,
     TextField,
     MenuItem,
     LinearProgress,
-    Link
+    Link,
+    Button,
+    Container,
+    CssBaseline
     } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,6 +20,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import ReplayCircleFilledIcon from '@mui/icons-material/ReplayCircleFilled';
 
 import { styled } from '@mui/system';
 import { Report } from '../../utils/consts';
@@ -34,13 +38,20 @@ export default function Lower() {
     const channel = React.useRef(null);
     const nav = useNavigate();
 
+    const [vh, setVh] = React.useState(window.innerHeight);
+    const [vw, setVw] = React.useState(window.innerWidth);
+
     const [loading, setLoading] = React.useState(true);
     const [report, setReport] = React.useState({});
     const [readId, setReadId] = React.useState(0);
+    const [embed, setEmbed] = React.useState(undefined);
 
     React.useEffect(() => {
         LoadComs();
+        window.addEventListener('resize', ScreenHook);
+
         return () => {
+            window.removeEventListener('resize', ScreenHook);
             if(channel.current){
                 channel.current.removeEventListener('message', handleReceive);
                 channel.current.close();
@@ -56,6 +67,11 @@ export default function Lower() {
 
         handleLoad();
     }, [readId]);
+
+    const ScreenHook = async() => {
+        setVh(window.innerHeight);
+        setVw(window.innerWidth);
+    }
 
     const LoadComs = async() => {
         if(!channel.current){
@@ -89,6 +105,9 @@ export default function Lower() {
                 break;
             case 'nav':
                 window.open(data.url, '_self');
+                break;
+            case 'embed':
+                OpenEmbed(data.url);
                 break;
         }
     }
@@ -124,6 +143,17 @@ export default function Lower() {
         setReport(result.result);
     }
     
+    const OpenEmbed = async(url) => {
+        setEmbed(url);
+        setLoading(false);
+    }
+
+    const CloseEmbed = async() => {
+        setEmbed(undefined);
+        setLoading(true);
+        Init()
+    }
+
   return (
     <Box>
         {loading && (
@@ -142,7 +172,7 @@ export default function Lower() {
             </Box>    
         )}
 
-        {!loading && (
+        {(!loading && readId > 0)&& (
             <Box>
                 <Stack spacing={{ xs: 2, sm: 2 }} useFlexGap>
                     <Box
@@ -342,6 +372,24 @@ export default function Lower() {
             
         )}
 
+        {(!loading && embed !== undefined) && (
+            <Box
+                sx={{
+                    display:'flex',
+                    flexDirection:'column',
+                    padding:1
+                }}
+            >
+                <Box
+                    sx={{
+                        marginBottom: 1
+                    }}
+                >
+                    <Button color='secondary' variant='contained' onClick={CloseEmbed} startIcon={<ReplayCircleFilledIcon/>}>Regresar</Button>
+                </Box>
+                <iframe height={vh*0.85} src={embed}/>
+            </Box>
+        )}
     </Box>
   );
 }

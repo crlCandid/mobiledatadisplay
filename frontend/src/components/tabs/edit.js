@@ -7,7 +7,10 @@ import Dialog from '@mui/material/Dialog';
 import { Colors } from '../../utils/consts';
 import TextField from '@mui/material/TextField';
 import {
-    Box
+    Box,
+    Switch,
+    FormControlLabel,
+    checkboxClasses
   } from '@mui/material';
 
 export default function EditDialog(props) {
@@ -27,8 +30,12 @@ export default function EditDialog(props) {
     onConfirm(edit);
   };
 
-  const handleChanges = async(e) => {
-    setEdit({...edit, [e.target.name]:e.target.value})
+  const handleChanges = async(e, check) => {
+    if(check){
+      setEdit({...edit, [e.target.name]:e.target.checked})
+    }else{
+      setEdit({...edit, [e.target.name]:e.target.value})
+    }
     setEditDelta(true);
   }
 
@@ -43,37 +50,55 @@ export default function EditDialog(props) {
         dividers
         sx={{
           display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          gap: 2
+          flexDirection: 'column',
+          gap: 2,
         }}
         >
-        <TextField id="outlined-basic" label="Header" placeholder='Header' variant="outlined" 
+        <Box
           sx={{
-            width:'100%'
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 2,
           }}
-          name='header'
-          value={edit.header}
-          onChange={handleChanges}
-        />
-        <TextField id="outlined-basic" label="Target URL" placeholder='URL' variant="outlined" 
+        >
+          <TextField id="outlined-basic" label="Header" placeholder='Header' variant="outlined" 
+            sx={{
+              width:'100%'
+            }}
+            name='header'
+            value={edit.header}
+            onChange={handleChanges}
+          />
+          <TextField id="outlined-basic" label="Target URL" placeholder='URL' variant="outlined" 
+            sx={{
+              width:'100%'
+            }}
+            name='url'
+            value={edit.url}
+            onChange={handleChanges}
+          />
+        </Box>
+        <Box
           sx={{
-            width:'100%'
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'start',
+            gap: 2,
           }}
-          name='url'
-          value={edit.url}
-          onChange={handleChanges}
-        />
-        <TextField id="outlined-basic" label="Icon URL" placeholder='URL' variant="outlined" 
-          sx={{
-            width:'100%'
-          }}
-          name='icon'
-          value={edit.icon}
-          onChange={handleChanges}
-        />
-        <Box component='img' src={edit.icon} sx={{width:35}}></Box>
+        >
+          <TextField id="outlined-basic" label="Icon URL" placeholder='URL' variant="outlined" 
+            sx={{
+              width:'50%'
+            }}
+            name='icon'
+            value={edit.icon}
+            onChange={handleChanges}
+          />
+          <Box component='img' src={edit.icon} sx={{width:35}}></Box>
+          <FormControlLabel control={<Switch name='embed' checked={edit.embed} onChange={(e) => handleChanges(e, true)}/>} label="Embeded" />
+        </Box>
       </DialogContent>
       <DialogActions>
         
