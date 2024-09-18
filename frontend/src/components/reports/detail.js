@@ -458,6 +458,7 @@ export default function Detail() {
                                 name='identifier'
                                 placeholder="123"
                                 value={report.identifier}
+                                onChange={handleReportChanges}
                                 required
                                 disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 />
@@ -471,6 +472,7 @@ export default function Detail() {
                                     name='kind'
                                     placeholder="Enter Description"
                                     value={report.kind}
+                                    onChange={handleReportChanges}
                                     required
                                     disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 >
@@ -510,6 +512,7 @@ export default function Detail() {
                                 name='description'
                                 placeholder="Enter Description"
                                 value={report.description}
+                                onChange={handleReportChanges}
                                 required
                                 multiline
                                 disabled={!roles.includes(Session.Indexes.Roles.Edit)}
@@ -527,6 +530,7 @@ export default function Detail() {
                                 placeholder="MM/DD/YY"
                                 type='date'
                                 value={report.dtfrom}
+                                onChange={handleReportChanges}
                                 required
                                 disabled={!roles.includes(Session.Indexes.Roles.Edit)}
                                 />
@@ -540,6 +544,7 @@ export default function Detail() {
                                 name='dtto'
                                 placeholder="MM/DD/YY"
                                 value={report.dtto}
+                                onChange={handleReportChanges}
                                 type='date'
                                 required
                                 disabled={!roles.includes(Session.Indexes.Roles.Edit)}

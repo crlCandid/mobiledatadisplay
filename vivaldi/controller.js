@@ -7,6 +7,7 @@
 // @match        *://*/*
 // @exclude      *://192.168.100.209:*/*
 // @exclude      *://localhost:*/*
+// @exclude      *://internaltools.ddns.nets*/*
 // @grant        none
 // ==/UserScript==
 

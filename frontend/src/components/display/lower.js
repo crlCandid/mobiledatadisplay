@@ -9,10 +9,7 @@ import { Box,
     TextField,
     MenuItem,
     LinearProgress,
-    Link,
     Button,
-    Container,
-    CssBaseline
     } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -21,13 +18,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import ReplayCircleFilledIcon from '@mui/icons-material/ReplayCircleFilled';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { styled } from '@mui/system';
 import { Report } from '../../utils/consts';
 import { useNavigate } from 'react-router-dom';
-import { Reports, Areas } from '../../controllers';
+import { Reports } from '../../controllers';
 import * as StylesUtil from '../../utils/styles';
-import { Session } from '../../utils';
 
 const FormGrid = styled('div')(() => ({
   display: 'flex',
@@ -45,7 +42,7 @@ export default function Lower() {
     const [report, setReport] = React.useState({});
     const [readId, setReadId] = React.useState(0);
     const [embed, setEmbed] = React.useState(undefined);
-
+    
     React.useEffect(() => {
         LoadComs();
         window.addEventListener('resize', ScreenHook);
@@ -162,6 +159,16 @@ export default function Lower() {
         Init()
     }
 
+    const OpenResource = async(url) => {
+        const msg = {
+            sender: 1,
+            action: 'banner',
+        }
+
+        handleSend(msg);
+        window.open(url, '_self');
+    }
+
   return (
     <Box>
         {loading && (
@@ -206,7 +213,7 @@ export default function Lower() {
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap:2, mb:2}}>
                                 <Button color='secondary' variant='contained' onClick={CloseReport} startIcon={<ReplayCircleFilledIcon/>}>Regresar</Button>
-                                <Typography sx={{width:'50%'}}>Report Detail</Typography>
+                                <Typography sx={{width:'50%'}}>Detalles de Reporte</Typography>
                             </Box>
                             <Divider orientation='horizontal' />
                             <Box
@@ -219,7 +226,7 @@ export default function Lower() {
                             >
                             <FormGrid sx={{ flexGrow: 1,}}>
                                 <FormLabel htmlFor="name" required>
-                                Name
+                                Nombre
                                 </FormLabel>
                                 <TextField
                                 size='small'
@@ -232,7 +239,7 @@ export default function Lower() {
                             </FormGrid>
                             <FormGrid sx={{ minWidth: '20%' }}>
                                 <FormLabel htmlFor="identifier" required>
-                                Indentifier
+                                Identificador
                                 </FormLabel>
                                 <OutlinedInput
                                 size='small'
@@ -245,7 +252,7 @@ export default function Lower() {
                             </FormGrid>
                             <FormGrid sx={{ minWidth: '20%' }}>
                                 <FormLabel htmlFor="kind" required>
-                                Kind
+                                Tipo
                                 </FormLabel>
                                 <Select
                                 size='small'
@@ -265,7 +272,7 @@ export default function Lower() {
                             <Box sx={{ display: 'flex', gap: 2 }}>
                             <FormGrid sx={{ flexGrow: 1 }}>
                                 <FormLabel htmlFor="description" required>
-                                Description
+                                Descripcion
                                 </FormLabel>
                                 <OutlinedInput
                                 size='small'
@@ -279,7 +286,7 @@ export default function Lower() {
                             </FormGrid>
                             <FormGrid sx={{ flexGrow: 1 }}>
                                 <FormLabel htmlFor="dtfrom" required>
-                                Start date
+                                Inicia
                                 </FormLabel>
                                 <OutlinedInput
                                 size='small'
@@ -293,7 +300,7 @@ export default function Lower() {
                             </FormGrid>
                             <FormGrid sx={{ flexGrow: 1 }}>
                                 <FormLabel htmlFor="dtto" required>
-                                Expiration date
+                                Expira
                                 </FormLabel>
                                 <OutlinedInput
                                 size='small'
@@ -341,7 +348,7 @@ export default function Lower() {
                             }}
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                                <Typography sx={{width:{sm:'10%', md:'25%'}}}>Resources</Typography>
+                                <Typography sx={{width:{sm:'10%', md:'25%'}}}>Recursos</Typography>
                             </Box>
                             <Box
                             sx={{
@@ -355,7 +362,8 @@ export default function Lower() {
                                     <Table aria-label="simple table" size='small'>
                                         <TableHead>
                                         <TableRow >
-                                            <TableCell sx={StylesUtil.Table001_s.Headers}>Name</TableCell>
+                                            <TableCell sx={StylesUtil.Table001_s.Headers}>Nombre</TableCell>
+                                            <TableCell sx={StylesUtil.Table001_s.Headers} align='center'>Revisar</TableCell>
                                         </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -365,7 +373,10 @@ export default function Lower() {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
                                             <TableCell component="th" scope="row">
-                                                <Link href={row.url}>{row.name}</Link>
+                                                {row.name}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row" align='center'>
+                                                <Button variant='contained' color='secondary' startIcon={<VisibilityIcon />} onClick={() => OpenResource(row.url)}>Ver</Button>
                                             </TableCell>
                                             </TableRow>
                                         ))}

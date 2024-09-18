@@ -10,21 +10,32 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import HomeIcon from '@mui/icons-material/Home';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Box, Typography, LinearProgress, Divider, Button } from '@mui/material';
+import { Box, Typography, LinearProgress, Divider, Button, Zoom } from '@mui/material';
 
 import { Reports } from '../../controllers';
 import * as StylesUtil from '../../utils/styles';
 import { Report } from '../../utils/consts';
 
+import lwr001 from '../../media/img/lwr001.png';
+import lwr002 from '../../media/img/lwr002.png';
+import lwr003 from '../../media/img/lwr003.png';
+
 export default function Listing(props) {
   const {doReturn} = props;
+  const imgs = [lwr001, lwr002, lwr003];
   document.title = 'Reports';
+
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [lastSend, setLastSend] = React.useState(-1);
 
-  const [cycle, setCycle] = React.useState(false);
-  const [timer, setTimer] = React.useState(0);
+  const [vh, setVh] = React.useState(window.innerHeight);
+  const [vw, setVw] = React.useState(window.innerWidth);
+
+  const [img, setImg] = React.useState(0);
+  const [imgCycle, setImgCycle] = React.useState(false);
+  const [imgShow, setImgShow] = React.useState(false);
+  const [imgId, setImgId] = React.useState(0);
 
   const channel = React.useRef(null);
 
@@ -71,6 +82,16 @@ export default function Listing(props) {
       return;
     }
 
+    switch(data.action){
+      case 'init':
+        LoadData();
+        break;
+      case 'banner':
+        setLoading(true);
+        setImgCycle(true);
+        setImgShow(true);
+        break;
+    } 
   }
   
   const handleSend = async(o) =>{
@@ -91,14 +112,6 @@ export default function Listing(props) {
     handleSend(msg);
   }
 
-  const LowerInit = async() => {
-    if(lastSend === -1){
-      return;
-    }
-
-    handleReportSelect(lastSend);
-  }
-
   const ReportFiltering = async(data) => {
     const result = data.filter(x => 
       x.status === Report.Active
@@ -108,9 +121,59 @@ export default function Listing(props) {
     setLoading(false);
   }
 
+  const handleCycleEnter = async() =>{
+    const id = setTimeout(() => {
+      setImgCycle(false);
+    }, 5000);
+
+    setImgId(id);
+  }
+
+  const handleCycleExit = async() =>{
+    const next = img + 1 >= imgs.length ? 0 : img + 1;
+    setImg(next);
+    setImgCycle(true);
+  }
+
   return (
     <Box>
-      {loading && (
+  
+      {(loading && imgShow) && (
+        <Box
+          sx={{
+            display:'flex',
+            flexDirection:'column',
+            height:(vh * 0.5),
+            width:vw,
+            alignItems:'center'
+          }}
+        >
+          <Zoom in={imgShow && imgCycle} onEntered={handleCycleEnter} onExited={handleCycleExit}>
+            <Box
+              component='img'
+              src={imgs[img]}
+              sx={{
+                height:(vh * 0.75),
+              }}
+            >
+            </Box>
+          </Zoom>
+          <Typography variant='h4' 
+            sx={{
+              ...StylesUtil.Table001.Headers, 
+              display:'flex', 
+              width:'100%', 
+              height:'100%',
+              flexDirection:'column', 
+              alignItems:'center', 
+              fontSize:(vw*0.025)}} 
+            >
+            Realiza un touch de 3 dedos en la pantalla inferior para volver al inicio
+          </Typography>
+        </Box>
+      )}
+
+      {(loading && !imgShow) && (
         <Box
           sx={{
             pb: 4,
