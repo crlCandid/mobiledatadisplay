@@ -19,7 +19,8 @@ import {
   Link, 
   Switch, 
   Tooltip, 
-  FormControlLabel 
+  FormControlLabel, 
+  Button
 } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import FeedIcon from '@mui/icons-material/Feed';
@@ -29,6 +30,7 @@ import * as StylesUtil from '../../utils/styles';
 import { Session } from '../../utils';
 import { ConfirmationDialog } from '../utils';
 import {default as EditDialog } from './edit';
+import {default as WizzardDialog} from './wizzard';
 
 export default function Main() {
     document.title = 'Tabs';
@@ -49,6 +51,8 @@ export default function Main() {
 
     const [recordDelete, setRecordDelete] = React.useState(0);
     const [recordDeleteOpen, setRecordDeleteOpen] = React.useState(false);
+
+    const [wizzardOpen, setWizzardOpen] = React.useState(false);
 
   React.useEffect(() => {
     handleLoading();
@@ -167,6 +171,27 @@ export default function Main() {
     LoadData();
   }
 
+  const handleWizzardConfirm = async(object) => {
+    const body = {
+      ...object
+    };
+
+    const result = await Tabs.Create(body);
+    
+    if(result === undefined){
+      alert('Error while connecting to Server. \nPlease, try again.');
+      return;
+    }
+
+    if(!result.success){
+      alert('Unable to create new record. \nPlease, try again');
+      return;
+    }
+
+    setWizzardOpen(false);
+    LoadData();
+  }
+
   return (
     <Box>
       <ConfirmationDialog
@@ -174,6 +199,14 @@ export default function Main() {
         onClose={() => setRecordOpen(false)}
         onConfirm={handelCrudConfirm}
         open={recordOpen}
+        message={'A new record will be created with the given input.'}
+      />
+
+      <WizzardDialog
+        keepMounted
+        onClose={() => setWizzardOpen(false)}
+        onConfirm={handleWizzardConfirm}
+        open={wizzardOpen}
         message={'A new record will be created with the given input.'}
       />
 
@@ -226,13 +259,16 @@ export default function Main() {
           <Typography variant="h6">
             Tab Listing
           </Typography>
+
+          <Divider orientation="vertical" variant="middle" flexItem />
+
           <Box
             sx={{
               gap:2,
               display: 'flex',
               alignItems: 'center',
               flexDirection: 'row',
-              display :  roles.includes(Session.Indexes.Roles.Edit)? 'flex' : 'none'
+              display :  roles.includes(Session.Indexes.Roles.Edit)? 'flex' : 'none',
             }}
           > 
             <Typography variant="h6" sx={{display: {xs:'none', md:'initial'}}}>
@@ -260,6 +296,21 @@ export default function Main() {
               </IconButton>
             </Tooltip>
           </Box>    
+
+          <Divider orientation="vertical" variant="middle" flexItem />
+
+          <Box
+            sx={{
+              gap:2,
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'row',
+              display :  roles.includes(Session.Indexes.Roles.Edit)? 'flex' : 'none',
+            }}
+          >
+            <Button variant='contained' color='secondary' onClick={() => setWizzardOpen(true)}>Use Embed Wizzard</Button>
+          </Box>
+
         </Box>    
         
         <Divider orientation='horizontal'></Divider>

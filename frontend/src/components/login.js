@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import * as Memory from '../utils/memory';
 import { Session } from '../utils';
 
+import test001 from '../media/gifs/test001.gif';
+
 export default function SignIn() {
     document.title = 'Login';
     const nav = useNavigate();
@@ -153,6 +155,15 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
+        {/* <Box
+              component='img'
+              src={test001}
+              sx={{
+                position:'fixed',
+                bottom:0,
+                right:0
+              }}
+        ></Box> */}
         {/* <GoogleLogin
           onSuccess={handleLoginSuccess}
           onFailure={handleLoginFailure}
